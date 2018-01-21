@@ -11,3 +11,12 @@ Therefore still use webpack/typescript.
 
 Run `npm run start`
 Open browser at localhost:9000
+
+
+# TODO
+
+* Try out https://parceljs.org/
+* Show a table with appointments and the status (in-use, deleted, free, etc)
+* Set up a backend with web sockets
+* Randomly generate events from a Node back-end that should show real-time updates in the table
+* Render the table with RxJS
