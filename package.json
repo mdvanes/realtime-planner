@@ -1,0 +1,22 @@
+{
+  "name": "realtime-planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdvanes/realtime-planner.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdvanes/realtime-planner/issues"
+  },
+  "homepage": "https://github.com/mdvanes/realtime-planner#readme",
+  "dependencies": {
+    "rxjs": "^5.5.6"
+  }
+}
