@@ -1,3 +1,11 @@
+# Goal
+
+Test RxJS combined with Web Sockets by setting up a real time planner where appointments can be made. Multiple users
+can add/remove/edit appointments and changes should propagate in real time to all users.
+
+To simulate extra users it should be possible to enable random planner activity on the server.
+
+
 # ES 6 modules test
 
 Run http-server
@@ -9,14 +17,21 @@ Therefore still use webpack/typescript.
 
 # Webpack
 
-Run `npm run start`
+Run `npm start`
 Open browser at localhost:9000
 
 
 # TODO
 
-* Try out https://parceljs.org/
-* Show a table with appointments and the status (in-use, deleted, free, etc)
-* Set up a backend with web sockets
-* Randomly generate events from a Node back-end that should show real-time updates in the table
-* Render the table with RxJS
+Planning
+
+* 23-1 use prettier 
+* 23-1 Set up a backend with web sockets
+* 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
+* 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
+* 30-1 Try out https://parceljs.org/
+* 30-1 Render the table with RxJS
+* 6-2 multiple streams 
+* combine with redux 
+* Firebase and hosting
+* Try out https://stenciljs.com/
