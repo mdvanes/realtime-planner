@@ -34,3 +34,15 @@ socket.onmessage = function(message) {
     //const data = JSON.parse(message.data);
     //document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);
 };
+
+// TODO
+// Rx.Observable.webSocket()
+// let subject = Observable.webSocket('ws://localhost:8081');
+// subject
+//     .retry()
+//     .subscribe(
+//         (msg) => console.log('message received: ' + msg),
+//         (err) => console.log(err),
+//         () => console.log('complete')
+//     );
+// subject.next(JSON.stringify({ op: 'hello' }));
