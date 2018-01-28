@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server",
-    "build": "./node_modules/.bin/webpack"
+    "build": "./node_modules/.bin/webpack",
+    "format": "./node_modules/.bin/prettier --write",
+    "precommit": "pretty-quick --staged"
   },
   "repository": {
     "type": "git",
@@ -26,5 +28,12 @@
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1",
     "ws": "^4.0.0"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "prettier": "1.10.2",
+    "pretty-quick": "^1.2.3",
+    "tslint": "^5.9.1",
+    "tslint-loader": "^3.5.3"
   }
 }
