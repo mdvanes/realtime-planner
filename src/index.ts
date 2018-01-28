@@ -17,7 +17,7 @@ subject.retry().subscribe(
     render(result);
   },
   err => console.log(err),
-  () => console.log("complete")
+  () => console.log("complete!")
 );
 subject.next(JSON.stringify({ message: "Msg from browser" }));
 
