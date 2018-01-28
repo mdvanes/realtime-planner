@@ -1,6 +1,4 @@
 const WebSocket = require('ws');
-const express = require('express');
-const http = require('http');
 const app = require('./http-server');
 const server = require('http').createServer();
 //const wss = new WebSocket.Server({ port: 9001, path: 'realtime', origin: 'http://localhost:9000' });
@@ -14,7 +12,15 @@ wss.on('connection', function connection(ws) {
         console.log('received: %s', message);
     });
 
-    ws.send(JSON.stringify({foo: 'something'})); // TODO use ws.send.json?
+    ws.on('error', (err) => {
+        if(err.code === 'ECONNRESET') {
+            console.log('Warning: user disconnected forcibly'); // e.g. F5
+        } else {
+            throw err;
+        }
+    });
+
+    ws.send(JSON.stringify({foo: 'something'}));
 });
 
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port

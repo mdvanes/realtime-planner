@@ -1,48 +1,35 @@
 import * as Rx from 'rxjs/Rx';
 
-console.log('ts hi');
-
-Rx.Observable
-    .of(1,2,3)
-    .map(x => x + '!!!')
-    .subscribe(x => console.log(x));
-
-
-
-// import WebSocket from 'ws';
+// console.log('ts hi');
 //
-// const ws = new WebSocket('ws://localhost:9001');
-//
-// ws.on('open', function open() {
-//     ws.send('something');
-// });
-//
-// ws.on('message', function incoming(data) {
-//     console.log(data);
-// });
+// Rx.Observable
+//     .of(1,2,3)
+//     .map(x => x + '!!!')
+//     .subscribe(x => console.log('Observable of array', x));
 
-const socket = new WebSocket('ws://localhost:9001');
-socket.onopen = function() {
+const subject = Rx.Observable.webSocket('ws://localhost:9001');
+subject
+    .retry()
+    .subscribe(
+        (msg) => {
+            //const x = JSON.stringify(JSON.parse(msg));
+            console.log('message received: ' + msg, msg);
+            const result:any = msg;
+            console.log(result.foo);
+            render(result);
+        },
+        (err) => console.log(err),
+        () => console.log('complete')
+    );
+subject.next(JSON.stringify({ message: 'Msg from browser' }));
 
-    console.log('Socket open.');
-    socket.send(JSON.stringify({message: 'Msg from browser'}));
-    console.log('Message sent.')
-};
-socket.onmessage = function(message) {
-
-    console.log('Socket server message', message);
-    //const data = JSON.parse(message.data);
-    //document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);
-};
-
-// TODO
-// Rx.Observable.webSocket()
-// let subject = Observable.webSocket('ws://localhost:8081');
-// subject
-//     .retry()
-//     .subscribe(
-//         (msg) => console.log('message received: ' + msg),
-//         (err) => console.log(err),
-//         () => console.log('complete')
-//     );
-// subject.next(JSON.stringify({ op: 'hello' }));
+// TODO add typing for "state", i.e. it should have an "appointments" property
+function render(state) {
+    const templ =
+        `<dd>
+            <dt>FOO</dt>
+            <dl>${state.foo}</dl>
+        </dd>`;
+    //document.getElementById('main').innerHTML = templ;
+    document.body.innerHTML = templ;
+}
