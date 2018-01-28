@@ -15,10 +15,35 @@ It works with two standalone modules (main.js and test.js).
 However, RxJS still uses require and that conflicts when loading into the browser.
 Therefore still use webpack/typescript.
 
+
 # Webpack
 
-Run `npm start`
-Open browser at localhost:9000
+Develop
+
+* Run `npm start`
+* Also run `node server/`
+* Open browser at localhost:9000
+
+Build
+
+* Run `npm run build`
+* Then run `node server/`
+* Open browser at localhost:9001
+
+Deploy setup
+
+https://www.youtube.com/watch?v=LOeioOKUKI8
+
+* npm install -g firebase-tools
+* firebase init hosting
+* public = dist
+* SPA = yes
+
+* firebase init functions
+
+Deploy updates
+
+* firebase deploy
 
 
 # TODO
