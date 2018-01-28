@@ -51,6 +51,10 @@ Deploy updates
 * firebase deploy
 * See https://realtime-planner.firebaseapp.com/foo
 
+Firebase and Travis CI
+
+https://docs.travis-ci.com/user/deployment/firebase/
+
 
 # TODO
 
