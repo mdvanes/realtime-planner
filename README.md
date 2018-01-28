@@ -27,7 +27,7 @@ Develop
 Develop with firebase
 
 * npm i -g firebase
-* firebase serve --only functions,hosting
+* `firebase serve --only functions,hosting`
 
 Build
 
@@ -48,7 +48,7 @@ https://www.youtube.com/watch?v=LOeioOKUKI8
 
 Deploy updates
 
-* firebase deploy
+* `firebase deploy`
 * See https://realtime-planner.firebaseapp.com/foo
 
 Firebase and Travis CI
