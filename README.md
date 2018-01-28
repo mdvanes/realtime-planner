@@ -5,7 +5,6 @@ can add/remove/edit appointments and changes should propagate in real time to al
 
 To simulate extra users it should be possible to enable random planner activity on the server.
 
-
 # ES 6 modules test
 
 Run http-server
@@ -15,7 +14,6 @@ It works with two standalone modules (main.js and test.js).
 However, RxJS still uses require and that conflicts when loading into the browser.
 Therefore still use webpack/typescript.
 
-
 # Webpack
 
 Develop
@@ -23,6 +21,8 @@ Develop
 * Run `npm start`
 * Also run `node server/`
 * Open browser at localhost:9000
+
+./node_modules/.bin/prettier src/\*.ts --write
 
 Develop with firebase
 
@@ -55,18 +55,17 @@ Firebase and Travis CI
 
 https://docs.travis-ci.com/user/deployment/firebase/
 
-
 # TODO
 
 Planning
 
-* 23-1 use prettier 
+* 23-1 use prettier
 * 23-1 Set up a backend with web sockets
 * 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
 * 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
 * 30-1 Try out https://parceljs.org/
 * 30-1 Render the table with RxJS
-* 6-2 multiple streams 
-* combine with redux 
+* 6-2 multiple streams
+* combine with redux
 * Firebase and hosting
 * Try out https://stenciljs.com/
