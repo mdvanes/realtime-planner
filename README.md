@@ -59,7 +59,7 @@ https://docs.travis-ci.com/user/deployment/firebase/
 
 Planning
 
-* 23-1 use prettier and TSLint (also for server/)
+* 23-1 use prettier and TSLint (also for server/), pre-commit hook, test with `pretty-quick` - pretty-quick define target dirs
 * 23-1 Set up a backend with web sockets
 * 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
 * 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
