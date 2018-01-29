@@ -39,5 +39,10 @@ function renderTable(apts) {
 }
 
 function renderRow(apt) {
-  return `<tr><td>${apt.name}</td></tr>`;
+  return `<tr>
+    <td>${apt.date}</td>
+    <td>${apt.firstName} ${apt.lastName}</td>
+    <td>${apt.phone || ''}</td>
+    <td>${apt.email}</td>
+  </tr>`;
 }
