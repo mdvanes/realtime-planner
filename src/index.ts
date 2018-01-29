@@ -28,10 +28,20 @@ function render(state) {
   //           <dt>FOO</dt>
   //           <dl>${state[0].name}</dl>
   //       </dd>`;
-  const output = renderTable(state);
+  const output = renderButton() + '<br/>' + renderTable(state);
   // document.getElementById('main').innerHTML = templ;
   //console.log(output);
   document.body.innerHTML = output;
+  document.querySelector('button').addEventListener('click', add);
+}
+
+function add() {
+  //alert('hoi2');
+  subject.next(JSON.stringify({ message: 'add' }));
+}
+
+function renderButton() {
+  return '<button>Add</button>';
 }
 
 function renderTable(apts) {
