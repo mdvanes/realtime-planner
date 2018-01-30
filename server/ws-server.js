@@ -34,26 +34,26 @@ wss.on('connection', function connection(ws) {
   ws.send(JSON.stringify(appointments));
 
   // Randomly send updated appointments
-  randomAdd(ws);
+  //randomAdd(ws);
 });
 
-function randomAdd(ws) {
-  // const minMs = 1000;
-  // const maxMs = 30000;
-  // const timeout = Math.random() * maxMs + minMs;
-  // setTimeout(function() {
-  //   appointments.push(randomAppointment());
-  //   ws.send(JSON.stringify(appointments));
-  //   randomAdd(ws);
-  // }, timeout);
-
-    // TODO observe changes to appointments and do send
-
-  appointments.push(appointment.createRandom());
-  ws.send(JSON.stringify(appointments));
-  appointments.push(appointment.createRandom());
-  ws.send(JSON.stringify(appointments));
-}
+// function randomAdd(ws) {
+//   // const minMs = 1000;
+//   // const maxMs = 30000;
+//   // const timeout = Math.random() * maxMs + minMs;
+//   // setTimeout(function() {
+//   //   appointments.push(randomAppointment());
+//   //   ws.send(JSON.stringify(appointments));
+//   //   randomAdd(ws);
+//   // }, timeout);
+//
+//   // TODO observe changes to appointments and do send
+//
+//   appointments.push(appointment.createRandom());
+//   ws.send(JSON.stringify(appointments));
+//   appointments.push(appointment.createRandom());
+//   ws.send(JSON.stringify(appointments));
+// }
 
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port
 //http.createServer(app).listen(9001, () => console.log('Listening at http://localhost:9001') );
