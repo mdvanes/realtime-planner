@@ -1,4 +1,5 @@
 import * as Rx from 'rxjs/Rx';
+import { notificationTitle } from './notification';
 // import {connectableObservableDescriptor} from "rxjs/observable/ConnectableObservable";
 
 // Rx.Observable
@@ -7,68 +8,57 @@ import * as Rx from 'rxjs/Rx';
 //     .subscribe(x => console.log('Observable of array', x));
 
 function observeAppointmentsChanges() {
-    const subject = Rx.Observable.webSocket('ws://localhost:9001');
-    subject.retry().subscribe(
-        msg => {
-            // const x = JSON.stringify(JSON.parse(msg));
-            // console.log('message received: ' + msg, msg);
-            if(!document.hasFocus()) { // TODO it is probably bad practice to set this in two places (also in observeWindowFocus)
-                document.title = document.title + ' *';
-            }
+  const subject = Rx.Observable.webSocket('ws://localhost:9001');
+  subject.retry().subscribe(
+    msg => {
+      // const x = JSON.stringify(JSON.parse(msg));
+      // console.log('message received: ' + msg, msg);
+      const result: any = msg;
 
-            const result: any = msg;
-            // console.log(result.foo);
-            render(result);
-        },
-        err => console.log(err),
-        () => console.log('complete')
-    );
-    subject.next(JSON.stringify({ message: 'Msg from browser' }));
+      // TODO not result.length > 0, but updates > 0 (msg pushed does not mean appointments added)
+      if (!document.hasFocus() && result.length > 0) {
+        // TODO it is probably bad practice to set this in two places (also in observeWindowFocus)
+        document.title = notificationTitle.addAndGetTitle();
+      } else {
+        document.title = notificationTitle.resetAndGetTitle();
+      }
 
-    // TODO add typing for "state", i.e. it should have an "appointments" property
-    function render(state) {
-        const output = renderButton() + '<br/>' + renderTable(state);
-        document.getElementById('target').innerHTML = output;
-        document.getElementById('button-add').addEventListener('click', add);
-    }
+      // console.log(result.foo);
+      render(result);
+    },
+    err => console.log(err),
+    () => console.log('complete')
+  );
+  subject.next(JSON.stringify({ message: 'Msg from browser' }));
 
-    function add() {
-        subject.next(JSON.stringify({ message: 'add' }));
-    }
+  // TODO add typing for "state", i.e. it should have an "appointments" property
+  function render(state) {
+    const output = renderButton() + '<br/>' + renderTable(state);
+    document.getElementById('target').innerHTML = output;
+    document.getElementById('button-add').addEventListener('click', add);
+  }
+
+  function add() {
+    subject.next(JSON.stringify({ message: 'add' }));
+  }
 }
 observeAppointmentsChanges();
 
-
 function observeWindowFocus() {
-    // function handleVisibilityChange() {
-    //     if (!document.hidden) {
-    //         document.title = 'all done!';
-    //     }
-    // }
-    //
-    // document.addEventListener("visibilitychange", handleVisibilityChange, false);
+  const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
 
-
-    const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
-
-    //const subscription =
-    subject.subscribe(function (e) {
-        if (!document.hidden) {
-            document.title = 'all done!';
-        }
-    });
+  subject.subscribe(function(e) {
+    if (!document.hidden) {
+      document.title = notificationTitle.resetAndGetTitle();
+    }
+  });
 }
 observeWindowFocus();
 
-
-
-
 function renderButton() {
-  return (
-    `<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="button-add">
+  return `<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="button-add">
     <i class="material-icons">add</i>
-    </button><div class="mdl-layout-spacer"></div>`
-  );
+    </button><div class="mdl-layout-spacer"></div>`;
 }
 
 function renderTable(apts) {
