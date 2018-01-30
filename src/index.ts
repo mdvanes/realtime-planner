@@ -6,30 +6,62 @@ import * as Rx from 'rxjs/Rx';
 //     .map(x => x + '!!!')
 //     .subscribe(x => console.log('Observable of array', x));
 
-const subject = Rx.Observable.webSocket('ws://localhost:9001');
-subject.retry().subscribe(
-  msg => {
-    // const x = JSON.stringify(JSON.parse(msg));
-    // console.log('message received: ' + msg, msg);
-    const result: any = msg;
-    // console.log(result.foo);
-    render(result);
-  },
-  err => console.log(err),
-  () => console.log('complete')
-);
-subject.next(JSON.stringify({ message: 'Msg from browser' }));
+function observeAppointmentsChanges() {
+    const subject = Rx.Observable.webSocket('ws://localhost:9001');
+    subject.retry().subscribe(
+        msg => {
+            // const x = JSON.stringify(JSON.parse(msg));
+            // console.log('message received: ' + msg, msg);
+            if(!document.hasFocus()) { // TODO it is probably bad practice to set this in two places (also in observeWindowFocus)
+                document.title = document.title + ' *';
+            }
 
-// TODO add typing for "state", i.e. it should have an "appointments" property
-function render(state) {
-  const output = renderButton() + '<br/>' + renderTable(state);
-  document.getElementById('target').innerHTML = output;
-  document.getElementById('button-add').addEventListener('click', add);
-}
+            const result: any = msg;
+            // console.log(result.foo);
+            render(result);
+        },
+        err => console.log(err),
+        () => console.log('complete')
+    );
+    subject.next(JSON.stringify({ message: 'Msg from browser' }));
 
-function add() {
-  subject.next(JSON.stringify({ message: 'add' }));
+    // TODO add typing for "state", i.e. it should have an "appointments" property
+    function render(state) {
+        const output = renderButton() + '<br/>' + renderTable(state);
+        document.getElementById('target').innerHTML = output;
+        document.getElementById('button-add').addEventListener('click', add);
+    }
+
+    function add() {
+        subject.next(JSON.stringify({ message: 'add' }));
+    }
 }
+observeAppointmentsChanges();
+
+
+function observeWindowFocus() {
+    // function handleVisibilityChange() {
+    //     if (!document.hidden) {
+    //         document.title = 'all done!';
+    //     }
+    // }
+    //
+    // document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+
+    const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
+
+    //const subscription =
+    subject.subscribe(function (e) {
+        if (!document.hidden) {
+            document.title = 'all done!';
+        }
+    });
+}
+observeWindowFocus();
+
+
+
 
 function renderButton() {
   return (
