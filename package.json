@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":
-      "./node_modules/.bin/concurrently --kill-others \"npm run watch\" \"./node_modules/.bin/webpack-dev-server --hot\"",
+    "start": "./node_modules/.bin/concurrently --kill-others \"npm run watch\" \"./node_modules/.bin/webpack-dev-server --hot\"",
     "startserver": "npm run lintserver && node server",
     "lintserver": "./node_modules/.bin/eslint server/**/*.js",
     "build": "./node_modules/.bin/webpack",
     "format": "./node_modules/.bin/prettier --write src/*.ts server/*.js",
-    "precommit": "pretty-quick --staged",
+    "formatstaged": "pretty-quick --staged",
     "watch": "npm-watch"
   },
   "watch": {
-    "startserver": ["server/**/*.js"]
+    "startserver": [
+      "server/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",

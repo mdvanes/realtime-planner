@@ -1,8 +1,6 @@
 import * as Rx from 'rxjs/Rx';
 // import {connectableObservableDescriptor} from "rxjs/observable/ConnectableObservable";
 
-// console.log('ts hi');
-//
 // Rx.Observable
 //     .of(1,2,3)
 //     .map(x => x + '!!!')
@@ -24,28 +22,27 @@ subject.next(JSON.stringify({ message: 'Msg from browser' }));
 
 // TODO add typing for "state", i.e. it should have an "appointments" property
 function render(state) {
-  // const templ = `<dd>
-  //           <dt>FOO</dt>
-  //           <dl>${state[0].name}</dl>
-  //       </dd>`;
   const output = renderButton() + '<br/>' + renderTable(state);
-  // document.getElementById('main').innerHTML = templ;
-  //console.log(output);
-  document.body.innerHTML = output;
-  document.querySelector('button').addEventListener('click', add);
+  document.getElementById('target').innerHTML = output;
+  document.getElementById('button-add').addEventListener('click', add);
 }
 
 function add() {
-  //alert('hoi2');
   subject.next(JSON.stringify({ message: 'add' }));
 }
 
 function renderButton() {
-  return '<button>Add</button>';
+  return (
+    `<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="button-add">
+    <i class="material-icons">add</i>
+    </button><div class="mdl-layout-spacer"></div>`
+  );
 }
 
 function renderTable(apts) {
-  return '<table>' + apts.map(renderRow).join('') + '</table>';
+  return `<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+${apts.map(renderRow).join('')}
+</table>`;
 }
 
 function renderRow(apt) {
