@@ -5,6 +5,7 @@ const server = require('http').createServer();
 const wss = new WebSocket.Server({ server });
 const appointments = require('./appointments');
 const appointment = require('./appointment');
+const Rx = require('rxjs/Rx');
 
 // Also mount the app here
 server.on('request', app);
@@ -33,6 +34,16 @@ wss.on('connection', function connection(ws) {
 
   ws.send(JSON.stringify(appointments));
 
+  // TODO observe changes to appointments and do send
+  // const x = Rx.Observable.from([1, 2, 3]);
+  // x.subscribe(val => console.log('A change was detected on x', val));
+  const appointmentsSource = Rx.Observable.from(appointments);
+  console.log('A ws connection was made');
+  // const subscribe =
+  appointmentsSource.subscribe(val =>
+    console.log('A change was detected on appointments', val)
+  );
+
   // Randomly send updated appointments
   //randomAdd(ws);
 });
@@ -47,7 +58,6 @@ wss.on('connection', function connection(ws) {
 //   //   randomAdd(ws);
 //   // }, timeout);
 //
-//   // TODO observe changes to appointments and do send
 //
 //   appointments.push(appointment.createRandom());
 //   ws.send(JSON.stringify(appointments));
