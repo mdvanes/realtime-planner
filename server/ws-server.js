@@ -7,20 +7,35 @@ const appointments = require('./appointments');
 const appointment = require('./appointment');
 const Rx = require('rxjs/Rx');
 
+let auto = false;
+
+function stateToJsonString() {
+    return JSON.stringify({auto, appointments});
+}
+
 // Also mount the app here
 server.on('request', app);
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+    // console.log('received: %s', message);
     const msg = JSON.parse(message);
+
     if (msg.message === 'add') {
       appointments.push(appointment.createRandom());
       wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(appointments));
+          client.send(stateToJsonString());
         }
       });
+    } else if(msg.message === 'auto') {
+        auto = !auto;
+        console.log('auto', auto);
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(stateToJsonString());
+            }
+        });
     }
   });
 
@@ -32,13 +47,13 @@ wss.on('connection', function connection(ws) {
     }
   });
 
-  ws.send(JSON.stringify(appointments));
+  console.log('A ws connection was made');
+  ws.send(stateToJsonString());
 
   // TODO observe changes to appointments and do send
   // const x = Rx.Observable.from([1, 2, 3]);
   // x.subscribe(val => console.log('A change was detected on x', val));
   const appointmentsSource = Rx.Observable.from(appointments);
-  console.log('A ws connection was made');
   // const subscribe =
   appointmentsSource.subscribe(val =>
     console.log('A change was detected on appointments', val)
