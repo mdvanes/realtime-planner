@@ -1,8 +1,8 @@
 import * as Rx from 'rxjs/Rx';
-import observeAppointmentsChanges from './appointmentChanges';
 import { notificationTitle } from './notification';
+import observeWsUpdates from './updateObserver';
 
-observeAppointmentsChanges();
+observeWsUpdates();
 
 function observeWindowFocus() {
   const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
