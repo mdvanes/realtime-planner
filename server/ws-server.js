@@ -17,13 +17,22 @@ const state = { auto, appointments };
 const stateSubject = new Rx.Subject();
 
 // Ids for web socket clients. If non available, create UUID
-const availableIds = ['Random Robby', 'Anonymous Albert'];
+const availableIds = [
+  'Unidentified Ursula',
+  'Jane Doe',
+  'Random Robby',
+  'Anonymous Albert'
+];
 function getId() {
   const id = availableIds.pop();
   if (!id) {
     return new Date().getTime().toString();
   }
   return id;
+}
+
+function restoreId(id) {
+  availableIds.push(id);
 }
 
 stateSubject.subscribe({
@@ -50,7 +59,7 @@ listener {Function} The listener to add.
 // Also mount the app here
 server.on('request', app);
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', function connection(ws /*, req*/) {
   ws.on('message', function incoming(message) {
     // console.log('received: %s', message);
     const msg = JSON.parse(message);
@@ -74,9 +83,18 @@ wss.on('connection', function connection(ws) {
     }
   });
 
-  console.log('A ws connection was made', ws.id);
+  ws.on('close', () => restoreId(ws.id));
+
+  // TODO change colors
+
+  console.log('A web socket connection was made');
   ws.id = getId();
-  console.log('ws id =', ws.id);
+  // console.log(
+  //   'ws id =' +
+  //     req.headers['x-forwarded-for'] +
+  //     ' ' +
+  //     req.connection.remoteAddress
+  // );
   ws.send(JSON.stringify({ id: ws.id }));
   appointments.push(appointment.createRandom());
   stateSubject.next({ auto, appointments });
