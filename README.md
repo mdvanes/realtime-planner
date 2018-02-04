@@ -65,6 +65,10 @@ https://prettier.io/docs/en/webstorm.html > "Using a file watcher"
 > Working directory set $ProjectFileDir$
 > Immediate file synchronization: Uncheck to reformat on Save only (otherwise code will jump around while you type).
 
+Styling: material design lite
+https://getmdl.io/
+
+
 # TODO
 
 Planning

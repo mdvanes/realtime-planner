@@ -16,6 +16,16 @@ let auto = false;
 const state = { auto, appointments };
 const stateSubject = new Rx.Subject();
 
+// Ids for web socket clients. If non available, create UUID
+const availableIds = ['Random Robby', 'Anonymous Albert'];
+function getId() {
+  const id = availableIds.pop();
+  if (!id) {
+    return new Date().getTime().toString();
+  }
+  return id;
+}
+
 stateSubject.subscribe({
   next: v => {
     wss.clients.forEach(function each(client) {
@@ -32,6 +42,9 @@ stateSubject.next(state);
 var obs = Rx.Observable.from([the on message event]);
 obs.subscribe(stateSubject);
 Which will also call stateSubject.next when the onMessage event is fired.
+See: websocket.addEventListener(type, listener) on https://github.com/websockets/ws/blob/master/doc/ws.md
+type {String} A string representing the event type to listen for.
+listener {Function} The listener to add.
  */
 
 // Also mount the app here
@@ -61,8 +74,10 @@ wss.on('connection', function connection(ws) {
     }
   });
 
-  console.log('A ws connection was made');
-  //ws.send(stateToJsonString());
+  console.log('A ws connection was made', ws.id);
+  ws.id = getId();
+  console.log('ws id =', ws.id);
+  ws.send(JSON.stringify({ id: ws.id }));
   appointments.push(appointment.createRandom());
   stateSubject.next({ auto, appointments });
 
