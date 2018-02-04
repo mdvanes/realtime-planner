@@ -5,7 +5,7 @@ export function renderToggle(isAuto: boolean) {
   // </label>`;
   let classNames = 'mdl-button mdl-js-button mdl-button--raised';
   if (isAuto) {
-    classNames += ' mdl-button--colored';
+    classNames += ' mdl-button--accent';
   }
   return `<button class="${classNames}" id="button-auto">
         auto ${isAuto}

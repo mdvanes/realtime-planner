@@ -85,8 +85,6 @@ wss.on('connection', function connection(ws /*, req*/) {
 
   ws.on('close', () => restoreId(ws.id));
 
-  // TODO change colors
-
   console.log('A web socket connection was made');
   ws.id = getId();
   // console.log(
