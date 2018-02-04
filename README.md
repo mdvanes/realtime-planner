@@ -55,6 +55,16 @@ Firebase and Travis CI
 
 https://docs.travis-ci.com/user/deployment/firebase/
 
+Run Prettier on save (in Webstorm)
+https://prettier.io/docs/en/webstorm.html > "Using a file watcher"
+> Go to File | Settings | Tools | File Watchers for Windows and Linux or WebStorm | Preferences | Tools | File Watchers for OS X and click + to add a new tool. Let’s name it Prettier.
+> File Type: JavaScript
+> Scope: Current File
+> Program set prettier (if you have prettier installed locally, see "Configure External Tool" above)
+> Arguments set --write [other opts] $FilePath$
+> Working directory set $ProjectFileDir$
+> Immediate file synchronization: Uncheck to reformat on Save only (otherwise code will jump around while you type).
+
 # TODO
 
 Planning

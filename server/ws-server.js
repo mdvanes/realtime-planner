@@ -9,9 +9,30 @@ const Rx = require('rxjs/Rx');
 
 let auto = false;
 
-function stateToJsonString() {
-    return JSON.stringify({auto, appointments});
-}
+// function stateToJsonString() {
+//   return JSON.stringify({ auto, appointments });
+// }
+
+const state = { auto, appointments };
+const stateSubject = new Rx.Subject();
+
+stateSubject.subscribe({
+  next: v => {
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(v));
+      }
+    });
+  }
+});
+
+stateSubject.next(state);
+
+/* TODO because it is a subject, this is also possible
+var obs = Rx.Observable.from([the on message event]);
+obs.subscribe(stateSubject);
+Which will also call stateSubject.next when the onMessage event is fired.
+ */
 
 // Also mount the app here
 server.on('request', app);
@@ -22,20 +43,13 @@ wss.on('connection', function connection(ws) {
     const msg = JSON.parse(message);
 
     if (msg.message === 'add') {
+      // TODO The entire point is to discard global "appointments", but just to update previous state and pass it in
       appointments.push(appointment.createRandom());
-      wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(stateToJsonString());
-        }
-      });
-    } else if(msg.message === 'auto') {
-        auto = !auto;
-        console.log('auto', auto);
-        wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(stateToJsonString());
-            }
-        });
+      stateSubject.next({ auto, appointments });
+    } else if (msg.message === 'auto') {
+      auto = !auto;
+      console.log('auto', auto);
+      stateSubject.next({ auto, appointments });
     }
   });
 
@@ -48,16 +62,9 @@ wss.on('connection', function connection(ws) {
   });
 
   console.log('A ws connection was made');
-  ws.send(stateToJsonString());
-
-  // TODO observe changes to appointments and do send
-  // const x = Rx.Observable.from([1, 2, 3]);
-  // x.subscribe(val => console.log('A change was detected on x', val));
-  const appointmentsSource = Rx.Observable.from(appointments);
-  // const subscribe =
-  appointmentsSource.subscribe(val =>
-    console.log('A change was detected on appointments', val)
-  );
+  //ws.send(stateToJsonString());
+  appointments.push(appointment.createRandom());
+  stateSubject.next({ auto, appointments });
 
   // Randomly send updated appointments
   //randomAdd(ws);

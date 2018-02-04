@@ -3,21 +3,13 @@ export const UP_TO_DATE: string = 'Up to date';
 // TODO convert to do this without state
 
 class NotificationTitle {
-  counter: number;
+  private counter: number;
 
   constructor() {
     this.counter = 0;
   }
 
-  add() {
-    this.counter++;
-  }
-
-  reset() {
-    this.counter = 0;
-  }
-
-  getTitle() {
+  public getTitle() {
     if (this.counter === 0) {
       return UP_TO_DATE;
     } else {
@@ -25,14 +17,22 @@ class NotificationTitle {
     }
   }
 
-  addAndGetTitle() {
+  public addAndGetTitle() {
     this.add();
     return this.getTitle();
   }
 
-  resetAndGetTitle() {
+  public resetAndGetTitle() {
     this.reset();
     return this.getTitle();
+  }
+
+  private add() {
+    this.counter++;
+  }
+
+  private reset() {
+    this.counter = 0;
   }
 }
 
