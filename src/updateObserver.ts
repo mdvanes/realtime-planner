@@ -1,5 +1,8 @@
 import * as Rx from 'rxjs/Rx';
-import updateAppointments from './appointmentChanges';
+import updateAppointments, { initialRender } from './appointmentChanges';
+import vTable from './vTable';
+
+let appointmentsVTable = null;
 
 export default function observeWsUpdates() {
   const subject = Rx.Observable.webSocket('ws://localhost:9001');
@@ -9,9 +12,24 @@ export default function observeWsUpdates() {
       console.log('message received: ' + msg, msg);
       const result: any = msg;
 
-      if (result.id) {
-        // Receiving an id
+      // TODO better dates, and sorting by date/time
+
+      if (result.type === 'init') {
+        // Receiving the initial state, including the ID
         setClientId(result.id);
+        //console.log('observeWsUpdates init', result);
+        appointmentsVTable = new vTable(result.appointments);
+        initialRender(appointmentsVTable);
+      } else if (result.type === 'add') {
+        //console.log('observeWsUpdates add', result);
+        // TODO implement
+        appointmentsVTable.add(result.appointment);
+      } else if (result.type === 'lock') {
+        console.log('observeWsUpdates lock', result);
+        // TODO implement
+      } else if (result.type === 'delete') {
+        console.log('observeWsUpdates delete', result);
+        // TODO implement
       } else {
         // Update of state
         updateAppointments(result, (payload: string) => {

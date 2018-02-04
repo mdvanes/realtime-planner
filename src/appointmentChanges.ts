@@ -1,6 +1,20 @@
 import * as Rx from 'rxjs/Rx';
 import { notificationTitle } from './notification';
 import * as partial from './partials';
+import VTable from './vTable';
+
+/*
+TODO
+
+1. on connect receive the full current state
+2. on change, only send a delta
+
+In either case, process first in vDom and then re-render vDom
+ */
+
+export function initialRender(vTable: VTable) {
+  console.log('will render', vTable);
+}
 
 export default function updateAppointments(state, send) {
   // Update of state
