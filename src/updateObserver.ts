@@ -5,7 +5,8 @@ import updateAppointments, {
 } from './appointmentChanges';
 import vTable from './vTable';
 
-let appointmentsVTable = null;
+let appointmentsVTable: vTable = null;
+let clientId: string = null;
 
 export default function observeWsUpdates() {
   const subject = Rx.Observable.webSocket('ws://localhost:9001');
@@ -31,6 +32,11 @@ export default function observeWsUpdates() {
       } else if (result.type === 'lock') {
         console.log('observeWsUpdates lock', result);
         // TODO implement
+        if (result.byClientId !== clientId) {
+          alert(
+            `Locking ${result.forAptId} for editing by ${result.byClientId}`
+          );
+        }
       } else if (result.type === 'delete') {
         console.log('observeWsUpdates delete', result);
         // TODO implement
@@ -53,4 +59,5 @@ export default function observeWsUpdates() {
 
 function setClientId(id) {
   document.getElementById('clientId').innerHTML = id;
+  clientId = id;
 }
