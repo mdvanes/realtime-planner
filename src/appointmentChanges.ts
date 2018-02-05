@@ -12,8 +12,27 @@ TODO
 In either case, process first in vDom and then re-render vDom
  */
 
-export function initialRender(vTable: VTable) {
+export function doInitRender(vTable: VTable) {
   console.log('will render', vTable);
+  const output = partial.renderTable(vTable.appointments);
+  const tableWrapperElem = document.getElementById('appointments-table');
+  tableWrapperElem.innerHTML = output;
+
+  const tableWrapperObservable = Rx.Observable.fromEvent(
+    tableWrapperElem,
+    'click'
+  )
+    .filter((ev: any) => ev.target.tagName === 'TD')
+    .map((ev: any) => ev.target.parentElement.id);
+  tableWrapperObservable.subscribe(val => console.log(val));
+  //subscribeToButtonClicks(send);
+}
+
+export function doNextRender(vTable: VTable) {
+  console.log('will render', vTable);
+  const output = partial.renderTable(vTable.appointments);
+  const tableWrapperElem = document.getElementById('appointments-table');
+  tableWrapperElem.innerHTML = output;
 }
 
 export default function updateAppointments(state, send) {
@@ -32,17 +51,17 @@ export default function updateAppointments(state, send) {
   }
 
   // console.log(result.foo);
-  render(state, send);
+  renderControls(state, send);
 }
 
 // TODO add typing for "state", i.e. it should have an "appointments" property
-function render(state, send) {
+function renderControls(state, send) {
   const output =
     partial.renderButton() +
     ' ' +
     partial.renderToggle(state.auto) +
-    '<div class="mdl-layout-spacer"></div><br/>' +
-    partial.renderTable(state.appointments);
+    '<div class="mdl-layout-spacer"></div><br/>';
+  //partial.renderTable(state.appointments);
   document.getElementById('target').innerHTML = output;
   subscribeToButtonClicks(send);
 }

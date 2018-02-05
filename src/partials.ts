@@ -19,7 +19,7 @@ ${apts.map(renderRow).join('')}
 }
 
 function renderRow(apt) {
-  return `<tr>
+  return `<tr id="${apt.aptId}">
     <td>${apt.date}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>

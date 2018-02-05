@@ -84,6 +84,7 @@ module.exports = class Appointment {
     this.phone = phone;
     this.email = email;
     this.date = date;
+    this.aptId = new Date().getTime();
   }
 
   static createRandom() {

@@ -1,5 +1,8 @@
 import * as Rx from 'rxjs/Rx';
-import updateAppointments, { initialRender } from './appointmentChanges';
+import updateAppointments, {
+  doInitRender,
+  doNextRender
+} from './appointmentChanges';
 import vTable from './vTable';
 
 let appointmentsVTable = null;
@@ -19,11 +22,12 @@ export default function observeWsUpdates() {
         setClientId(result.id);
         //console.log('observeWsUpdates init', result);
         appointmentsVTable = new vTable(result.appointments);
-        initialRender(appointmentsVTable);
+        doInitRender(appointmentsVTable);
       } else if (result.type === 'add') {
         //console.log('observeWsUpdates add', result);
         // TODO implement
         appointmentsVTable.add(result.appointment);
+        doNextRender(appointmentsVTable);
       } else if (result.type === 'lock') {
         console.log('observeWsUpdates lock', result);
         // TODO implement
