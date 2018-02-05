@@ -12,7 +12,15 @@ TODO
 In either case, process first in vDom and then re-render vDom
  */
 
-export function doInitRender(vTable: VTable) {
+function unwrapButton(elem: any) {
+  if (elem.tagName === 'BUTTON') {
+    return elem;
+  } else if (elem.tagName === 'I') {
+    return elem.parentNode;
+  }
+}
+
+export function doInitRender(vTable: VTable, send) {
   console.log('will render', vTable);
   const output = partial.renderTable(vTable.appointments);
   const tableWrapperElem = document.getElementById('appointments-table');
@@ -22,10 +30,13 @@ export function doInitRender(vTable: VTable) {
     tableWrapperElem,
     'click'
   )
-    .filter((ev: any) => ev.target.tagName === 'TD')
-    .map((ev: any) => ev.target.parentElement.id);
-  tableWrapperObservable.subscribe(val => console.log(val));
-  //subscribeToButtonClicks(send);
+    .filter(
+      (ev: any) => ev.target.tagName === 'BUTTON' || ev.target.tagName === 'I'
+    )
+    .map((ev: any) => unwrapButton(ev.target).getAttribute('data-apt-id'));
+  tableWrapperObservable.subscribe(aptId =>
+    send(JSON.stringify({ type: 'edit', forId: aptId }))
+  );
 }
 
 export function doNextRender(vTable: VTable) {
@@ -61,7 +72,6 @@ function renderControls(state, send) {
     ' ' +
     partial.renderToggle(state.auto) +
     '<div class="mdl-layout-spacer"></div><br/>';
-  //partial.renderTable(state.appointments);
   document.getElementById('target').innerHTML = output;
   subscribeToButtonClicks(send);
 }

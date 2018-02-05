@@ -78,6 +78,8 @@ wss.on('connection', function connection(ws /*, req*/) {
         type: 'add',
         appointment: appointment.createRandom()
       });
+    } else if (msg.type === 'edit') {
+      console.log('editing', msg.forId, 'by', ws.id);
     } else if (msg.message === 'auto') {
       auto = !auto;
       console.log('auto', auto);

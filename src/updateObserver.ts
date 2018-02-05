@@ -20,12 +20,12 @@ export default function observeWsUpdates() {
       if (result.type === 'init') {
         // Receiving the initial state, including the ID
         setClientId(result.id);
-        //console.log('observeWsUpdates init', result);
+        // console.log('observeWsUpdates init', result);
         appointmentsVTable = new vTable(result.appointments);
-        doInitRender(appointmentsVTable);
+        doInitRender(appointmentsVTable, (payload: string) => {
+          subject.next(payload);
+        });
       } else if (result.type === 'add') {
-        //console.log('observeWsUpdates add', result);
-        // TODO implement
         appointmentsVTable.add(result.appointment);
         doNextRender(appointmentsVTable);
       } else if (result.type === 'lock') {

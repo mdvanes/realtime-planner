@@ -1,5 +1,5 @@
 export default class VTable {
-  appointments: any[];
+  public appointments: any[];
 
   // TODO typing should be array of appointments
   constructor(appointments: any[]) {
