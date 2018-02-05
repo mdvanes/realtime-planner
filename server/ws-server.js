@@ -72,14 +72,20 @@ wss.on('connection', function connection(ws /*, req*/) {
 
     if (msg.message === 'add') {
       // TODO The entire point is to discard global "appointments", but just to update previous state and pass it in
-      appointments.push(appointment.createRandom());
-      stateSubject.next({ auto, appointments });
+      const newAppointment = appointment.createRandom();
+      appointments.push(newAppointment);
+      //stateSubject.next({ auto, appointments });
       stateSubject.next({
         type: 'add',
-        appointment: appointment.createRandom()
+        appointment: newAppointment
       });
     } else if (msg.type === 'edit') {
       console.log('editing', msg.forId, 'by', ws.id);
+      stateSubject.next({
+        type: 'lock',
+        forAptId: msg.forId,
+        byClientId: ws.id
+      });
     } else if (msg.message === 'auto') {
       auto = !auto;
       console.log('auto', auto);
