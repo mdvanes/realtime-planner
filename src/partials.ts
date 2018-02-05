@@ -19,11 +19,16 @@ ${apts.map(renderRow).join('')}
 }
 
 function renderRow(apt) {
-  return `<tr id="${apt.aptId}">
+  return `<tr>
     <td>${apt.date}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>
     <td>${apt.email}</td>
+    <td><button class="mdl-button mdl-js-button" id="button-lock" data-apt-id="${
+      apt.aptId
+    }">
+        <i class="material-icons">edit</i>
+    </button></td>
   </tr>`;
 }
 
