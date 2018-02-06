@@ -13,6 +13,10 @@
         .content {
             margin: 20px;
         }
+
+        .is-locked, .mdl-data-table tbody tr.is-locked:hover {
+            background-color: #536dfe;
+        }
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -33,6 +37,7 @@
         <div class="page-content">
             <div class="content" id="target"></div>
             <div class="content" id="appointments-table"></div>
+            <div id="dialog-wrapper"></div>
         </div>
     </main>
 </div>
