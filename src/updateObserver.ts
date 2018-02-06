@@ -12,8 +12,6 @@ export default function observeWsUpdates() {
   const subject = Rx.Observable.webSocket('ws://localhost:9001');
   subject.retry().subscribe(
     msg => {
-      // const x = JSON.stringify(JSON.parse(msg));
-      console.log('message received: ' + msg, msg);
       const result: any = msg;
 
       // TODO better dates, and sorting by date/time
@@ -21,7 +19,6 @@ export default function observeWsUpdates() {
       if (result.type === 'init') {
         // Receiving the initial state, including the ID
         setClientId(result.id);
-        // console.log('observeWsUpdates init', result);
         appointmentsVTable = new vTable(result.appointments);
         doInitRender(appointmentsVTable, (payload: string) => {
           subject.next(payload);
@@ -30,12 +27,9 @@ export default function observeWsUpdates() {
         appointmentsVTable.add(result.appointment);
         doNextRender(appointmentsVTable);
       } else if (result.type === 'lock') {
-        console.log('observeWsUpdates lock', result);
-        // TODO implement
         if (result.byClientId !== clientId) {
-          alert(
-            `Locking ${result.forAptId} for editing by ${result.byClientId}`
-          );
+          appointmentsVTable.lock(result.forAptId);
+          doNextRender(appointmentsVTable);
         }
       } else if (result.type === 'delete') {
         console.log('observeWsUpdates delete', result);

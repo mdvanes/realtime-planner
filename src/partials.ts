@@ -18,17 +18,37 @@ ${apts.map(renderRow).join('')}
 </table>`;
 }
 
+export function renderEditDialog() {
+  return `<dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Editing appointment</h4>
+    <div class="mdl-dialog__content">
+      <p>
+        Not yet possible to edit the fields.
+      </p>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Close</button>
+    </div>
+  </dialog>`;
+}
+
 function renderRow(apt) {
-  return `<tr>
+  let classNames = '';
+  let editCell = `<button class="mdl-button mdl-js-button" id="button-lock" data-apt-id="${
+    apt.aptId
+  }">
+        <i class="material-icons">edit</i>
+    </button>`;
+  if (apt.isLocked) {
+    classNames += 'is-locked';
+    editCell = '<li class="material-icons">lock</li>';
+  }
+  return `<tr class="${classNames}">
     <td>${apt.date}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>
     <td>${apt.email}</td>
-    <td><button class="mdl-button mdl-js-button" id="button-lock" data-apt-id="${
-      apt.aptId
-    }">
-        <i class="material-icons">edit</i>
-    </button></td>
+    <td>${editCell}</td>
   </tr>`;
 }
 
