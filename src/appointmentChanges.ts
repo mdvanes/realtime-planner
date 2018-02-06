@@ -21,7 +21,7 @@ function unwrapButton(elem: any) {
 }
 
 export function doInitRender(vTable: VTable, send) {
-  const output = partial.renderTable(vTable.appointments);
+  const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
   tableWrapperElem.innerHTML = output;
 
@@ -57,7 +57,7 @@ function addEditDialog() {
 }
 
 export function doNextRender(vTable: VTable) {
-  const output = partial.renderTable(vTable.appointments);
+  const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
   tableWrapperElem.innerHTML = output;
 }
