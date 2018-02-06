@@ -60,8 +60,20 @@ export function doNextRender(vTable: VTable) {
   const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
   tableWrapperElem.innerHTML = output;
+  renderEffects();
 }
 
+function renderEffects() {
+  const lockedRowElem = document.querySelector('.is-locked');
+  if (lockedRowElem) {
+    setTimeout(() => {
+      lockedRowElem.classList.add('is-locked-effect');
+    }, 100);
+  }
+  // console.log(document.querySelector('.is-locked').classList);
+}
+
+// TODO this is no longer called when rows are added, it should only be called then (not even on lock)
 export default function updateAppointments(state, send) {
   // Update of state
   // TODO not result.length > 0, but updates > 0 (msg pushed does not mean appointments added) - reactive way to
