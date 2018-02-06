@@ -1,5 +1,5 @@
 export default class VTable {
-  public appointments: any[]; // TODO private
+  private appointments: any[];
 
   // TODO typing should be array of appointments
   constructor(appointments: any[]) {
@@ -16,5 +16,9 @@ export default class VTable {
       apt.isLocked = apt.aptId.toString() === aptId;
       return apt;
     });
+  }
+
+  public getAppointments(): any[] {
+    return this.appointments;
   }
 }
