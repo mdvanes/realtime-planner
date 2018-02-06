@@ -60,6 +60,17 @@ export function doNextRender(vTable: VTable) {
   const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
   tableWrapperElem.innerHTML = output;
+  renderEffects();
+}
+
+function renderEffects() {
+  const lockedRowElem = document.querySelector('.is-locked');
+  if (lockedRowElem) {
+    setTimeout(() => {
+      lockedRowElem.classList.add('is-locked-effect');
+    }, 100);
+  }
+  // console.log(document.querySelector('.is-locked').classList);
 }
 
 export default function updateAppointments(state, send) {
