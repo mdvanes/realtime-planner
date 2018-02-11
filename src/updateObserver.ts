@@ -12,7 +12,7 @@ let clientId: string = null;
 
 export default function observeWsUpdates() {
   const subject = Rx.Observable.webSocket('ws://localhost:9001');
-  subject.retry().subscribe(
+  subject.retry(10).subscribe(
     msg => {
       const result: any = msg;
 
