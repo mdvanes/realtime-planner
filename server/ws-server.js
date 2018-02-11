@@ -75,6 +75,7 @@ wss.on('connection', function connection(ws /*, req*/) {
       // TODO The entire point is to discard global "appointments", but just to update previous state and pass it in
       const newAppointment = appointment.createRandom();
       appointments.push(newAppointment);
+      //stateSubject.next({ auto, appointments });
       stateSubject.next({
         type: 'add',
         appointment: newAppointment
@@ -123,6 +124,11 @@ wss.on('connection', function connection(ws /*, req*/) {
   //     req.connection.remoteAddress
   // );
   ws.send(JSON.stringify({ type: 'init', id: ws.id, auto, appointments }));
+  // appointments.push(appointment.createRandom());
+  stateSubject.next({ auto, appointments }); // TODO remove
+
+  // Randomly send updated appointments
+  //randomAdd(ws);
 });
 
 function emulateBehavior() {
