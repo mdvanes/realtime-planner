@@ -11,9 +11,10 @@ export default class VTable {
     this.appointments.push(appointment);
   }
 
-  public lock(aptId: string) {
+  public lock(aptId: string, byClientId: string) {
     this.appointments = this.appointments.map((apt: any) => {
       apt.isLocked = apt.aptId.toString() === aptId;
+      apt.byClientId = byClientId;
       return apt;
     });
   }

@@ -34,7 +34,7 @@ export default function observeWsUpdates() {
         updateTitle();
       } else if (result.type === 'lock') {
         if (result.byClientId !== clientId) {
-          appointmentsVTable.lock(result.forAptId);
+          appointmentsVTable.lock(result.forAptId, result.byClientId);
           doNextRender(appointmentsVTable);
         }
       } else if (result.type === 'delete') {
