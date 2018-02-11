@@ -8,6 +8,7 @@ const appointment = require('./appointment');
 const Rx = require('rxjs/Rx');
 
 let auto = false;
+let autoTimeoutId = null;
 
 // function stateToJsonString() {
 //   return JSON.stringify({ auto, appointments });
@@ -74,7 +75,6 @@ wss.on('connection', function connection(ws /*, req*/) {
       // TODO The entire point is to discard global "appointments", but just to update previous state and pass it in
       const newAppointment = appointment.createRandom();
       appointments.push(newAppointment);
-      //stateSubject.next({ auto, appointments });
       stateSubject.next({
         type: 'add',
         appointment: newAppointment
@@ -90,6 +90,17 @@ wss.on('connection', function connection(ws /*, req*/) {
       auto = !auto;
       console.log('auto', auto);
       stateSubject.next({ type: 'auto', auto });
+      // If auto=true, send random locks
+      if (auto) {
+        emulateBehavior();
+      } else if (autoTimeoutId) {
+        clearTimeout(autoTimeoutId);
+        stateSubject.next({
+          type: 'lock',
+          forAptId: null,
+          byClientId: 'AUTO'
+        });
+      }
     }
   });
 
@@ -118,6 +129,26 @@ wss.on('connection', function connection(ws /*, req*/) {
   // Randomly send updated appointments
   //randomAdd(ws);
 });
+
+function emulateBehavior() {
+  const minMs = 1000;
+  const maxMs = 30000;
+  const delay = Math.floor(Math.random() * maxMs + minMs);
+  let aptId = null;
+  if (appointments.length > 0) {
+    const apIndex = Math.floor(Math.random() * appointments.length);
+    aptId = appointments[apIndex].aptId;
+  }
+  console.log(`Will emulating lock in ${delay}ms on`, aptId);
+  autoTimeoutId = setTimeout(function() {
+    stateSubject.next({
+      type: 'lock',
+      forAptId: aptId.toString(),
+      byClientId: 'AUTO'
+    });
+    emulateBehavior();
+  }, delay);
+}
 
 // function randomAdd(ws) {
 //   // const minMs = 1000;

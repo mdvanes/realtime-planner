@@ -1,10 +1,8 @@
 import * as Rx from 'rxjs/Rx';
-import { notificationTitle } from './notification';
 import * as partial from './partials';
 import VTable from './vTable';
 
 /*
-TODO
 
 1. on connect receive the full current state
 2. on change, only send a delta

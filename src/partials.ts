@@ -41,7 +41,7 @@ function renderRow(apt) {
     </button>`;
   if (apt.isLocked) {
     classNames += 'is-locked';
-    editCell = '<li class="material-icons">lock</li>';
+    editCell = `<i class="material-icons" title="${apt.byClientId}">lock</i>`;
   }
   return `<tr class="${classNames}">
     <td>${apt.date}</td>
