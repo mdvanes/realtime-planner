@@ -40,11 +40,10 @@ export default function observeWsUpdates() {
       } else if (result.type === 'delete') {
         console.log('observeWsUpdates delete', result);
         // TODO implement
-      } else {
-        // Update of state
-        // updateAppointments(result, (payload: string) => {
-        //   subject.next(payload);
-        // });
+      } else if (result.type === 'auto') {
+        renderControls(result, (payload: string) => {
+          subject.next(payload);
+        });
       }
     },
     err => console.log(err),

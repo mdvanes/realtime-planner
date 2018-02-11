@@ -89,7 +89,7 @@ wss.on('connection', function connection(ws /*, req*/) {
     } else if (msg.message === 'auto') {
       auto = !auto;
       console.log('auto', auto);
-      stateSubject.next({ auto, appointments });
+      stateSubject.next({ type: 'auto', auto });
     }
   });
 
