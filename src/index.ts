@@ -4,13 +4,16 @@ import observeWsUpdates from './updateObserver';
 
 observeWsUpdates();
 
-function observeWindowFocus() {
-  const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
+function setTitle() {
+  if (!document.hidden) {
+    document.title = notificationTitle.resetAndGetTitle();
+  }
+}
 
-  subject.subscribe(_ => {
-    if (!document.hidden) {
-      document.title = notificationTitle.resetAndGetTitle();
-    }
-  });
+function observeWindowFocus() {
+  // visibilitychange for tab changes, window.onfocus for window changes
+  const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
+  subject.subscribe(setTitle);
+  window.onfocus = setTitle;
 }
 observeWindowFocus();

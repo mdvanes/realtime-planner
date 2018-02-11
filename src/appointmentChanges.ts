@@ -73,28 +73,8 @@ function renderEffects() {
   // console.log(document.querySelector('.is-locked').classList);
 }
 
-// TODO this is no longer called when rows are added, it should only be called then (not even on lock)
-export default function updateAppointments(state, send) {
-  // Update of state
-  // TODO not result.length > 0, but updates > 0 (msg pushed does not mean appointments added) - reactive way to
-  // compare previous to current appointments.length?
-  if (
-    !document.hasFocus() &&
-    state.appointments &&
-    state.appointments.length > 0
-  ) {
-    // TODO it is probably bad practice to set this in two places (also in observeWindowFocus)
-    document.title = notificationTitle.addAndGetTitle();
-  } else {
-    document.title = notificationTitle.resetAndGetTitle();
-  }
-
-  // console.log(result.foo);
-  renderControls(state, send);
-}
-
 // TODO add typing for "state", i.e. it should have an "appointments" property
-function renderControls(state, send) {
+export function renderControls(state, send) {
   const output = `${partial.renderButton()} ${partial.renderToggle(
     state.auto
   )} <div class="mdl-layout-spacer"></div><br/>`;
