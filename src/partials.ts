@@ -32,6 +32,21 @@ export function renderEditDialog() {
   </dialog>`;
 }
 
+function formatDate(dateMillis) {
+  const date = new Date(dateMillis);
+  const formattedDate = date.toLocaleString('nl-NL', {
+    weekday: 'long',
+    // year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const formattedTime = date.toLocaleString('nl-NL', {
+    hour: 'numeric',
+    minute: 'numeric'
+  });
+  return formattedTime + ' ' + formattedDate;
+}
+
 function renderRow(apt) {
   let classNames = '';
   let editCell = `<button class="mdl-button mdl-js-button" id="button-lock" data-apt-id="${
@@ -44,7 +59,7 @@ function renderRow(apt) {
     editCell = `<i class="material-icons" title="${apt.byClientId}">lock</i>`;
   }
   return `<tr class="${classNames}">
-    <td>${apt.date}</td>
+    <td class="mdl-data-table__cell--non-numeric">${apt.date} ${formatDate(apt.date)}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>
     <td>${apt.email}</td>

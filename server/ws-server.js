@@ -125,7 +125,7 @@ wss.on('connection', function connection(ws /*, req*/) {
   // );
   ws.send(JSON.stringify({ type: 'init', id: ws.id, auto, appointments }));
   // appointments.push(appointment.createRandom());
-  stateSubject.next({ auto, appointments }); // TODO remove
+  //stateSubject.next({ auto, appointments }); // TODO remove
 
   // Randomly send updated appointments
   //randomAdd(ws);
