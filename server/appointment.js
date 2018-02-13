@@ -77,6 +77,23 @@ const times = ['1000', '1100', '1300', '1400'];
 const randomTime = times[Math.floor(Math.random() * times.length)];
  */
 
+function randomizeDate() {
+  const oneWeekMs = 1000 * 60 * 60 * 24 * 7;
+  const baseDate = new Date();
+  baseDate.setHours(0,0,0);
+  const maxDayOffset = 200;
+  const nrOfDays = Math.floor(Math.random() * maxDayOffset);
+  const dayOffsetMs = 1000 * 60 * 60 * 24 * nrOfDays;
+  const timeslots = [9, 10, 13, 14];
+  const timeslot = timeslots[Math.floor(Math.random() * timeslots.length)];
+  const timeOffsetMs = 1000 * 60 * 60 * timeslot;
+  console.log('baseDate', baseDate, timeslot);
+  const result = baseDate.getTime() + oneWeekMs + dayOffsetMs + timeOffsetMs;
+  return result;
+  // return new Date(result);
+  // return (new Date()).getTime();
+}
+
 module.exports = class Appointment {
   constructor(firstName, lastName, phone, email, date) {
     this.firstName = firstName;
@@ -96,7 +113,7 @@ module.exports = class Appointment {
       lastName,
       maybeGetPhonenumber(),
       guessEmail(firstName, lastName),
-      new Date()
+      randomizeDate()
     );
   }
 };
