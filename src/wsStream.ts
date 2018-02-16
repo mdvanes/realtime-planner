@@ -1,10 +1,6 @@
 import { Observable } from 'rxjs/Rx';
 import { notificationTitle } from './notification';
-import {
-  doInitRender,
-  doNextRender,
-  renderControls
-} from './renderHelpers';
+import { doInitRender, doNextRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
 
 let appointmentsVTable: vTable = null;
@@ -65,7 +61,10 @@ export default function initWsStream() {
     .map(processAddMessage);
 
   const lock$ = ws$
-    .filter((message: any) => message.type === 'lock' && message.byClientId !== clientId)
+    .filter(
+      (message: any) =>
+        message.type === 'lock' && message.byClientId !== clientId
+    )
     .map(processLockMessage);
 
   const auto$ = ws$
@@ -80,15 +79,14 @@ export default function initWsStream() {
   // TODO implement delete message
 
   // Avoid multiple subscriptions
-  Observable
-    .merge(init$, add$, lock$, auto$)
+  Observable.merge(init$, add$, lock$, auto$)
     // retry(10) ?
     .subscribe(
-        msg => {
-          // TODO still needed?
-        },
-        err => console.log(err),
-        () => console.log('complete')
+      msg => {
+        // TODO still needed?
+      },
+      err => console.log(err),
+      () => console.log('complete')
     );
 
   /* TODO automatically re-connect web socket if server restarts and get state -
