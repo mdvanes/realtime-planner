@@ -1,4 +1,4 @@
-import * as Rx from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import * as partial from './partials';
 import VTable from './vTable';
 
@@ -35,10 +35,7 @@ export function doInitRender(vTable: VTable, send) {
   });
 
   // Clicking an edit button on a row
-  const tableWrapperObservable = Rx.Observable.fromEvent(
-    tableWrapperElem,
-    'click'
-  )
+  const tableWrapperObservable = Observable.fromEvent(tableWrapperElem, 'click')
     .filter(
       (ev: any) => ev.target.tagName === 'BUTTON' || ev.target.tagName === 'I'
     )
@@ -82,12 +79,12 @@ export function renderControls(state, send) {
 
 function subscribeToButtonClicks(send) {
   const buttonAdd = document.getElementById('button-add');
-  const buttonAddObs = Rx.Observable.fromEvent(buttonAdd, 'click');
+  const buttonAddObs = Observable.fromEvent(buttonAdd, 'click');
 
   buttonAddObs.subscribe(_ => send(JSON.stringify({ message: 'add' })));
 
   const buttonAuto = document.getElementById('button-auto');
-  const buttonAutoObs = Rx.Observable.fromEvent(buttonAuto, 'click');
+  const buttonAutoObs = Observable.fromEvent(buttonAuto, 'click');
 
   buttonAutoObs.subscribe(_ => send(JSON.stringify({ message: 'auto' })));
 }

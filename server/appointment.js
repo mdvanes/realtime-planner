@@ -80,7 +80,7 @@ const randomTime = times[Math.floor(Math.random() * times.length)];
 function randomizeDate() {
   const oneWeekMs = 1000 * 60 * 60 * 24 * 7;
   const baseDate = new Date();
-  baseDate.setHours(0,0,0);
+  baseDate.setHours(0, 0, 0);
   const maxDayOffset = 200;
   const nrOfDays = Math.floor(Math.random() * maxDayOffset);
   const dayOffsetMs = 1000 * 60 * 60 * 24 * nrOfDays;

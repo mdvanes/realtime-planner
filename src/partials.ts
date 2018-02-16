@@ -59,7 +59,9 @@ function renderRow(apt) {
     editCell = `<i class="material-icons" title="${apt.byClientId}">lock</i>`;
   }
   return `<tr class="${classNames}">
-    <td class="mdl-data-table__cell--non-numeric">${apt.date} ${formatDate(apt.date)}</td>
+    <td class="mdl-data-table__cell--non-numeric">${apt.date} ${formatDate(
+    apt.date
+  )}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>
     <td>${apt.email}</td>
