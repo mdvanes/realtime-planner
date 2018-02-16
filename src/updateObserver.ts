@@ -11,8 +11,7 @@ let appointmentsVTable: vTable = null;
 let clientId: string = null;
 
 export default function observeWsUpdates() {
-  const subject = Observable.webSocket('ws://localhost:9001');
-  // TODO do not call an observable subject
+  const ws$ = Observable.webSocket('ws://localhost:9001');
   // TODO use a filter on subject.filter
   /*
   // Manage subscriptions manually / imperitivly.
@@ -35,7 +34,7 @@ export default function observeWsUpdates() {
     .map(handle the thingy)
     .first() // closes the subscription after completion
    */
-  subject.retry(10).subscribe(
+  ws$.retry(10).subscribe(
     msg => {
       const result: any = msg;
 
@@ -45,11 +44,11 @@ export default function observeWsUpdates() {
         // Receiving the initial state, including the ID
         setClientId(result.id);
         renderControls(result, (payload: string) => {
-          subject.next(payload);
+          ws$.next(payload);
         });
         appointmentsVTable = new vTable(result.appointments);
         doInitRender(appointmentsVTable, (payload: string) => {
-          subject.next(payload);
+          ws$.next(payload);
         });
       } else if (result.type === 'add') {
         appointmentsVTable.add(result.appointment);
@@ -65,7 +64,7 @@ export default function observeWsUpdates() {
         // TODO implement
       } else if (result.type === 'auto') {
         renderControls(result, (payload: string) => {
-          subject.next(payload);
+          ws$.next(payload);
         });
       }
     },
