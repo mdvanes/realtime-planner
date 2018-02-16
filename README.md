@@ -79,6 +79,7 @@ Planning
 * 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
 * 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
 * 30-1 Try out https://parceljs.org/ and ts-node and sentry.io 
+* Replace innerHTML with cloneNode: http://blog.teamtreehouse.com/creating-reusable-markup-with-the-html-template-element
 * 30-1 Render the table with RxJS
 * 6-2 multiple streams
 * combine with redux
