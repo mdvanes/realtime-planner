@@ -12,6 +12,29 @@ let clientId: string = null;
 
 export default function observeWsUpdates() {
   const subject = Rx.Observable.webSocket('ws://localhost:9001');
+  // TODO do not call an observable subject
+  // TODO use a filter on subject.filter
+  /*
+  // Manage subscriptions manually / imperitivly.
+  //const init$ = subject
+  //  .filter(x => x.type === 'init')
+  //init$.subscribe()
+  const add$ = subject.filter(x => x.type === 'add')
+  add$.subscribe()
+  etc ...
+
+  // Anti pattern to have a lot of subscribe()
+  const add$ = subject.filter(x => x.type === 'add')
+    .map(handle the thingy)
+
+  const lock$ = ...
+  const stream$ = Rx.observable.merge(add$, lock$, .).subscribe()
+
+  // Init is an exception, because happens once
+  const init$ = subject.filter(x => x.type === 'add')
+    .map(handle the thingy)
+    .first() // closes the subscription after completion
+   */
   subject.retry(10).subscribe(
     msg => {
       const result: any = msg;

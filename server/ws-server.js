@@ -62,15 +62,18 @@ server.on('request', app);
 
 wss.on('connection', function connection(ws /*, req*/) {
   // Error: message/onmessage is invalid event target
+  // TODO nodeCallback to do this
   // Rx.Observable.fromEvent('onmessage').subscribe(x => {
   //   appointments.push(appointment.createRandom());
   //   console.log('observing on message', x);
   // });
 
+  // TODO replace RxJS EventBus (Bjorn)
   ws.on('message', function incoming(message) {
     // console.log('received: %s', message);
     const msg = JSON.parse(message);
 
+    // bus.next(add)
     if (msg.message === 'add') {
       // TODO The entire point is to discard global "appointments", but just to update previous state and pass it in
       const newAppointment = appointment.createRandom();

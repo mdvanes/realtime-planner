@@ -1,4 +1,4 @@
-import * as Rx from 'rxjs/Rx';
+import * as Rx from 'rxjs/Rx'; // TODO only import what is needed (test build size difference)
 import { notificationTitle } from './notification';
 import observeWsUpdates from './updateObserver';
 

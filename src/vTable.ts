@@ -12,6 +12,7 @@ export default class VTable {
   }
 
   public lock(aptId: string, byClientId: string) {
+    // TODO instead of check in map, do filter first. Would require new rendering solution.
     this.appointments = this.appointments.map((apt: any) => {
       apt.isLocked = apt.aptId.toString() === aptId;
       apt.byClientId = byClientId;
