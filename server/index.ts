@@ -1,4 +1,5 @@
-const server = require('./ws-server');
+//const server = require('./ws-server');
+import server from './ws-server';
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port
 
 process.env.PORT = 9001; // TODO

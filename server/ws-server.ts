@@ -1,11 +1,14 @@
-const WebSocket = require('ws');
-const app = require('./http-server');
+import WebSocket from 'ws';
+//const WebSocket = require('ws');
+import app from './http-server';
 const server = require('http').createServer();
+//import { createServer } from 'http';
+//const server = createServer();
 //const wss = new WebSocket.Server({ port: 9001, path: 'realtime', origin: 'http://localhost:9000' });
 const wss = new WebSocket.Server({ server });
-const appointments = require('./appointments');
-const appointment = require('./appointment');
-const Rx = require('rxjs/Rx');
+import appointments from './appointments';
+import appointment from './appointment';
+import * as Rx from 'rxjs/Rx';
 
 let auto = false;
 let autoTimeoutId = null;
@@ -157,4 +160,5 @@ function emulateBehavior() {
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port
 //http.createServer(app).listen(9001, () => console.log('Listening at http://localhost:9001') );
 
-module.exports = server;
+
+export default server;
