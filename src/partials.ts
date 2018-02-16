@@ -35,10 +35,10 @@ export function renderEditDialog() {
 function formatDate(dateMillis) {
   const date = new Date(dateMillis);
   const formattedDate = date.toLocaleString('nl-NL', {
-    weekday: 'long',
     // year: 'numeric',
+    day: 'numeric',
     month: 'long',
-    day: 'numeric'
+    weekday: 'long'
   });
   const formattedTime = date.toLocaleString('nl-NL', {
     hour: 'numeric',
