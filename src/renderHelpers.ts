@@ -66,6 +66,18 @@ function renderEffects() {
     }, 100);
   }
   // console.log(document.querySelector('.is-locked').classList);
+  const addedRowElems = document.querySelectorAll('.is-added');
+  setTimeout(() => {
+    addedRowElems.forEach(elem => {
+      elem.classList.remove('is-added');
+    });
+  }, 800);
+  // const addedRowElem = document.querySelector('.is-added');
+  // if (addedRowElems) {
+  //   setTimeout(() => {
+  //     addedRowElems.classList.remove('is-added');
+  //   }, 800);
+  // }
 }
 
 // TODO add typing for "state", i.e. it should have an "appointments" property

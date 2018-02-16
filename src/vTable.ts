@@ -1,26 +1,37 @@
-export default class VTable {
-  private appointments: any[];
+import Appointment from './Appointment';
 
-  // TODO typing should be array of appointments
-  constructor(appointments: any[]) {
+function sort(apt: Appointment, otherApt: Appointment) {
+  return apt.date - otherApt.date;
+}
+
+export default class VTable {
+  private appointments: Appointment[];
+
+  constructor(appointments: Appointment[]) {
     // Array with id, columns, event bindings
-    this.appointments = appointments;
+    this.appointments = appointments.sort(sort);
   }
   // Convenience function for adding
-  public add(appointment: any) {
-    this.appointments.push(appointment);
+  public add(apt: Appointment) {
+    this.appointments.map((apt: Appointment) => {
+      delete apt.isAdded;
+      return apt;
+    });
+    apt.isAdded = true;
+    this.appointments.push(apt);
+    this.appointments.sort(sort); // TODO replace appointments:Appointment[] with Set
   }
 
   public lock(aptId: string, byClientId: string) {
     // TODO instead of check in map, do filter first. Would require new rendering solution.
-    this.appointments = this.appointments.map((apt: any) => {
+    this.appointments = this.appointments.map((apt: Appointment) => {
       apt.isLocked = apt.aptId.toString() === aptId;
       apt.byClientId = byClientId;
       return apt;
     });
   }
 
-  public getAppointments(): any[] {
+  public getAppointments(): Appointment[] {
     return this.appointments;
   }
 }

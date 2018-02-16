@@ -57,11 +57,11 @@ function renderRow(apt) {
   if (apt.isLocked) {
     classNames += 'is-locked';
     editCell = `<i class="material-icons" title="${apt.byClientId}">lock</i>`;
+  } else if (apt.isAdded) {
+    classNames += 'is-added';
   }
   return `<tr class="${classNames}">
-    <td class="mdl-data-table__cell--non-numeric">${apt.date} ${formatDate(
-    apt.date
-  )}</td>
+    <td class="mdl-data-table__cell--non-numeric">${formatDate(apt.date)}</td>
     <td>${apt.firstName} ${apt.lastName}</td>
     <td>${apt.phone || ''}</td>
     <td>${apt.email}</td>
