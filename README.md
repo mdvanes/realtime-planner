@@ -77,7 +77,7 @@ Planning
 * 23-1 Set up a backend with web sockets
 * 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
 * 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
-* 30-1 Try out https://parceljs.org/
+* 30-1 Try out https://parceljs.org/ en ts-node
 * 30-1 Render the table with RxJS
 * 6-2 multiple streams
 * combine with redux
