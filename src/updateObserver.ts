@@ -1,4 +1,4 @@
-import * as Rx from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import {
   doInitRender,
   doNextRender,
@@ -11,7 +11,7 @@ let appointmentsVTable: vTable = null;
 let clientId: string = null;
 
 export default function observeWsUpdates() {
-  const subject = Rx.Observable.webSocket('ws://localhost:9001');
+  const subject = Observable.webSocket('ws://localhost:9001');
   // TODO do not call an observable subject
   // TODO use a filter on subject.filter
   /*

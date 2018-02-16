@@ -1,4 +1,4 @@
-import * as Rx from 'rxjs/Rx'; // TODO only import what is needed (test build size difference)
+import { Observable } from 'rxjs/Rx'; // TODO test build size difference between import * as Rx and import {Observable}
 import { notificationTitle } from './notification';
 import observeWsUpdates from './updateObserver';
 
@@ -12,7 +12,7 @@ function setTitle() {
 
 function observeWindowFocus() {
   // visibilitychange for tab changes, window.onfocus for window changes
-  const subject = Rx.Observable.fromEvent(document, 'visibilitychange');
+  const subject = Observable.fromEvent(document, 'visibilitychange');
   subject.subscribe(setTitle);
   window.onfocus = setTitle;
 }
