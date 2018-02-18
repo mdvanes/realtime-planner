@@ -1,4 +1,4 @@
-import Appointment from './Appointment';
+import { Appointment } from './Appointment';
 
 function sort(apt: Appointment, otherApt: Appointment) {
   return apt.date - otherApt.date;
