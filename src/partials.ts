@@ -1,3 +1,5 @@
+import './AppointmentTable';
+
 export function renderToggle(isAuto: boolean) {
   // return `<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
   //   <input type="checkbox" id="switch-1" class="mdl-switch__input" checked>
@@ -15,7 +17,8 @@ export function renderToggle(isAuto: boolean) {
 export function renderTable(apts) {
   return `<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 ${apts.map(renderRow).join('')}
-</table>`;
+</table>
+<appointment-table appts="1"></appointment-table>`;
 }
 
 export function renderEditDialog() {
