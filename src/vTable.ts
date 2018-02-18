@@ -11,14 +11,15 @@ export default class VTable {
     // Array with id, columns, event bindings
     this.appointments = appointments.sort(sort);
   }
+
   // Convenience function for adding
-  public add(apt: Appointment) {
+  public add(newApt: Appointment) {
     this.appointments.map((apt: Appointment) => {
       delete apt.isAdded;
       return apt;
     });
-    apt.isAdded = true;
-    this.appointments.push(apt);
+    newApt.isAdded = true;
+    this.appointments.push(newApt);
     this.appointments.sort(sort); // TODO replace appointments:Appointment[] with Set
   }
 
