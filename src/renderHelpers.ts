@@ -44,6 +44,8 @@ export function doInitRender(vTable: VTable, send) {
     send(JSON.stringify({ type: 'edit', forId: aptId }));
     dialog.showModal();
   });
+
+  renderEffects();
 }
 
 function addEditDialog() {
@@ -51,12 +53,13 @@ function addEditDialog() {
   document.getElementById('dialog-wrapper').innerHTML = output;
 }
 
-export function doNextRender(vTable: VTable) {
-  const output = partial.renderTable(vTable.getAppointments());
-  const tableWrapperElem = document.getElementById('appointments-table');
-  tableWrapperElem.innerHTML = output;
-  renderEffects();
-}
+// TODO remove?
+// export function doNextRender(vTable: VTable) {
+//   const output = partial.renderTable(vTable.getAppointments());
+//   const tableWrapperElem = document.getElementById('appointments-table');
+//   tableWrapperElem.innerHTML = output;
+//   renderEffects();
+// }
 
 function renderEffects() {
   const lockedRowElem = document.querySelector('.is-locked');
@@ -81,9 +84,9 @@ function renderEffects() {
 }
 
 // TODO add typing for "state", i.e. it should have an "appointments" property
-export function renderControls(state, send) {
+export function renderControls(isAuto: boolean, send) {
   const output = `${partial.renderButton()} ${partial.renderToggle(
-    state.auto
+    isAuto
   )} <div class="mdl-layout-spacer"></div><br/>`;
   document.getElementById('target').innerHTML = output;
   subscribeToButtonClicks(send);

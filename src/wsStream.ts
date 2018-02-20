@@ -1,24 +1,24 @@
 import { Observable } from 'rxjs/Rx';
+import { Appointment } from './Appointment';
 import { notificationTitle } from './notification';
-import { doInitRender, doNextRender, renderControls } from './renderHelpers';
+import { doInitRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
 
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
 
-function processAddMessage(message: any) {
-  appointmentsVTable.add(message.appointment);
-  doNextRender(appointmentsVTable);
-  updateTitle();
-}
-
-function processLockMessage(message: any) {
-  appointmentsVTable.lock(message.forAptId, message.byClientId);
-  doNextRender(appointmentsVTable);
-}
+// function processAddMessage(message: any) {
+//   appointmentsVTable.add(message.appointment);
+//   doNextRender(appointmentsVTable);
+//   updateTitle();
+// }
+//
+// function processLockMessage(message: any) {
+//   appointmentsVTable.lock(message.forAptId, message.byClientId);
+//   doNextRender(appointmentsVTable);
+// }
 
 export default function initWsStream() {
-  const ws$ = Observable.webSocket('ws://localhost:9001');
   /*
   // Manage subscriptions manually / imperatively.
   //const init$ = subject
@@ -40,55 +40,134 @@ export default function initWsStream() {
     .map(handle the thingy)
     .first()
    */
+  /** Implementation conform "filter type" pattern **/
+  // const ws$ = Observable.webSocket('ws://localhost:9001');
+  // const init$ = ws$
+  //   .filter((message: any) => message.type === 'init')
+  //   .map((initMessage: any) => {
+  //     // Receiving the initial state, including the ID
+  //     setClientId(initMessage.id);
+  //     renderControls(initMessage, (payload: string) => {
+  //       ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+  //     });
+  //     appointmentsVTable = new vTable(initMessage.appointments);
+  //     doInitRender(appointmentsVTable, (payload: string) => {
+  //       ws$.next(payload);
+  //     });
+  //   })
+  //   .first(); // closes the subscription after completion
+  //
+  // const add$ = ws$
+  //   .filter((message: any) => message.type === 'add')
+  //   .map(processAddMessage);
+  //
+  // const lock$ = ws$
+  //   .filter(
+  //     (message: any) =>
+  //       message.type === 'lock' && message.byClientId !== clientId
+  //   )
+  //   .map(processLockMessage);
+  //
+  // const auto$ = ws$
+  //   .filter((message: any) => message.type === 'auto')
+  //   .map((message: any) => {
+  //     renderControls(message, (payload: string) => {
+  //       ws$.next(payload);
+  //     });
+  //   });
+  //
+  // // Avoid multiple subscriptions
+  // Observable.merge(init$, add$, lock$, auto$)
+  //   // retry(10) ?
+  //   .subscribe(
+  //     msg => {
+  //       // TODO still needed?
+  //     },
+  //     err => console.log(err),
+  //     () => console.log('complete')
+  //   );
+  /** Implementation conform state store pattern - http://reactivex.io/rxjs/manual/tutorial.html#state-stores **/
+  const ws$ = Observable.webSocket('ws://localhost:9001');
 
   const init$ = ws$
     .filter((message: any) => message.type === 'init')
-    .map((initMessage: any) => {
+    .map((message: any) => state => {
       // Receiving the initial state, including the ID
-      setClientId(initMessage.id);
-      renderControls(initMessage, (payload: string) => {
-        ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+      return Object.assign({}, state, {
+        appointments: message.appointments,
+        clientId: message.id,
+        isAuto: message.auto
       });
-      appointmentsVTable = new vTable(initMessage.appointments);
-      doInitRender(appointmentsVTable, (payload: string) => {
-        ws$.next(payload);
-      });
+      // setClientId(initMessage.id);
+      // renderControls(initMessage, (payload: string) => {
+      //   ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+      // });
+      // appointmentsVTable = new vTable(initMessage.appointments);
+      // doInitRender(appointmentsVTable, (payload: string) => {
+      //   ws$.next(payload);
+      // });
     })
     .first(); // closes the subscription after completion
 
   const add$ = ws$
     .filter((message: any) => message.type === 'add')
-    .map(processAddMessage);
+    .map((message: any) => state => {
+      // TODO get rid of this side effect
+      updateTitle();
+      // TODO create newAppointments inline
+      const newAppointments = state.appointments;
+      newAppointments.push(message.appointment);
+      return Object.assign({}, state, {
+        appointments: newAppointments
+      });
+    });
 
   const lock$ = ws$
     .filter(
       (message: any) =>
         message.type === 'lock' && message.byClientId !== clientId
     )
-    .map(processLockMessage);
-
-  const auto$ = ws$
-    .filter((message: any) => message.type === 'auto')
-    .map((message: any) => {
-      renderControls(message, (payload: string) => {
-        ws$.next(payload);
+    .map((message: any) => state => {
+      const newAppointments = state.appointments.map((apt: Appointment) => {
+        apt.isLocked = apt.aptId.toString() === message.forAptId;
+        apt.byClientId = message.byClientId;
+        return apt;
+      });
+      return Object.assign({}, state, {
+        appointments: newAppointments
       });
     });
 
-  // TODO better dates, and sorting by date/time
-  // TODO implement delete message
-
-  // Avoid multiple subscriptions
-  Observable.merge(init$, add$, lock$, auto$)
-    // retry(10) ?
-    .subscribe(
-      msg => {
-        // TODO still needed?
-      },
-      err => console.log(err),
-      () => console.log('complete')
+  const auto$ = ws$
+    .filter((message: any) => message.type === 'auto')
+    .map((message: any) => state =>
+      Object.assign({}, state, {
+        isAuto: message.auto
+      })
     );
 
+  // TODO implement delete message
+
+  // Setting the initial state before receiving the initial server state
+  const state$ = Observable.merge(init$, add$, auto$, lock$).scan(
+    (state: any, changeFn) => changeFn(state),
+    {
+      appointments: [],
+      clientId: '',
+      isAuto: false
+    }
+  );
+
+  state$.subscribe((state: any) => {
+    setClientId(state.clientId);
+    renderControls(state.isAuto, (payload: string) => {
+      ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+    });
+    appointmentsVTable = new vTable(state.appointments);
+    doInitRender(appointmentsVTable, (payload: string) => {
+      ws$.next(payload);
+    });
+  });
   /* TODO automatically re-connect web socket if server restarts and get state -
    https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/
    */
