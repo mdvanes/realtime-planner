@@ -114,12 +114,27 @@ export default function initWsStream() {
     .map((message: any) => state => {
       // TODO get rid of this side effect
       updateTitle();
-      // TODO create newAppointments inline
-      const newAppointments = state.appointments;
-      newAppointments.push(message.appointment);
+      // Not inline:
+      // const newAppointments = state.appointments.map((apt: Appointment) => {
+      //   delete apt.isAdded;
+      //   return apt;
+      // });
+      // message.appointment.isAdded = true;
+      // return Object.assign({}, state, {
+      //   appointments: [message.appointment, ...newAppointments]
+      // });
+      // Mostly inline, but not necessarily readable:
+      message.appointment.isAdded = true;
       return Object.assign({}, state, {
-        appointments: newAppointments
+        appointments: [
+          message.appointment,
+          ...state.appointments.map((apt: Appointment) => {
+            delete apt.isAdded;
+            return apt;
+          })
+        ]
       });
+      // TODO delete apt.isAdded also for any other message type then add, current bug: try adding and then locking
     });
 
   const lock$ = ws$
@@ -158,16 +173,21 @@ export default function initWsStream() {
     }
   );
 
-  state$.subscribe((state: any) => {
-    setClientId(state.clientId);
-    renderControls(state.isAuto, (payload: string) => {
-      ws$.next(payload); // TODO is there no better way than to supply ws$ here?
-    });
-    appointmentsVTable = new vTable(state.appointments);
-    doInitRender(appointmentsVTable, (payload: string) => {
-      ws$.next(payload);
-    });
-  });
+  state$.subscribe(
+    (state: any) => {
+      setClientId(state.clientId);
+      renderControls(state.isAuto, (payload: string) => {
+        ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+      });
+      // TODO vTable has no purpose anymore? Do sort here?
+      appointmentsVTable = new vTable(state.appointments);
+      doInitRender(appointmentsVTable, (payload: string) => {
+        ws$.next(payload);
+      });
+    },
+    err => console.error('an error on state$', err),
+    () => console.log('state$ completed')
+  );
   /* TODO automatically re-connect web socket if server restarts and get state -
    https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/
    */
