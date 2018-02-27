@@ -96,10 +96,10 @@ function subscribeToButtonClicks(send) {
   const buttonAdd = document.getElementById('button-add');
   const buttonAddObs = Observable.fromEvent(buttonAdd, 'click');
 
-  buttonAddObs.subscribe(_ => send(JSON.stringify({ message: 'add' })));
+  buttonAddObs.subscribe(_ => send(JSON.stringify({ message: { type: 'add'} })));
 
   const buttonAuto = document.getElementById('button-auto');
   const buttonAutoObs = Observable.fromEvent(buttonAuto, 'click');
 
-  buttonAutoObs.subscribe(_ => send(JSON.stringify({ message: 'auto' })));
+  buttonAutoObs.subscribe(_ => send(JSON.stringify({ message: { type: 'auto' } })));
 }
