@@ -112,7 +112,7 @@ export default function initWsStream() {
   const add$ = ws$
     .filter((message: any) => message.type === 'add')
     .map((message: any) => state => {
-      // TODO get rid of this side effect
+      // TODO get rid of this side effect -> make "title" a property in state
       updateTitle();
       // Not inline:
       // const newAppointments = state.appointments.map((apt: Appointment) => {
@@ -134,7 +134,7 @@ export default function initWsStream() {
           })
         ]
       });
-      // TODO delete apt.isAdded also for any other message type then add, current bug: try adding and then locking
+      // TODO delete apt.isAdded also for any message type other then "add", current bug: try adding and then locking
     });
 
   const lock$ = ws$
@@ -177,7 +177,7 @@ export default function initWsStream() {
     (state: any) => {
       setClientId(state.clientId);
       renderControls(state.isAuto, (payload: string) => {
-        ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+        ws$.next(payload); // TODO is there no better way than to supply ws$ here? -> dispatch
       });
       // TODO vTable has no purpose anymore? Do sort here?
       appointmentsVTable = new vTable(state.appointments);
