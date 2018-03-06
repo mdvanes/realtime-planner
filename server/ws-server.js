@@ -103,23 +103,16 @@ const connectionMessage$ =
   .map(container => {
     //console.log('c1', container);
     container.parsedMessage = container.message ? JSON.parse(container.message).message : { type: 'init' };
-    //console.log('c2', container.parsedMessage);
+    console.log('c2', container.parsedMessage);
     return container;
   });
 
-// connectionMessage$.subscribe(function (cm) {
-//   // cm.client for client
-//   // cm.message for message
-//   console.log('incoming message', cm.client.id, cm.message);
-// });
-
 const init$ = connectionMessage$
-  .filter(container => container.parsedMessage.type === 'init')
-  .map(container => state => {
-    // TODO use destructuring for container.client
-    container.client.send(JSON.stringify({
+  .filter(({ parsedMessage }) => parsedMessage.type === 'init')
+  .map(({ client }) => state => {
+    client.send(JSON.stringify({
       type: 'init',
-      id: container.client.id,
+      id: client.id,
       auto: state.isAuto,
       appointments: state.appointments
     }));
@@ -127,7 +120,7 @@ const init$ = connectionMessage$
   })
 
 const add$ = connectionMessage$
-  .filter(message => message.parsedMessage.type === 'add')
+  .filter(({ parsedMessage }) => parsedMessage.type === 'add')
   .map(() => state => {
     const newAppointment = appointment.createRandom();
     // TODO how to solve this side-effect? See also todo below
@@ -152,8 +145,21 @@ const add$ = connectionMessage$
   //   });
   // });
 
+const edit$ = connectionMessage$
+  .filter(({ parsedMessage }) => parsedMessage.type === 'edit')
+  .map(({ client, parsedMessage }) => state => {
+    stateSubject.next({
+      type: 'lock',
+      forAptId: parsedMessage.forId,
+      byClientId: client.id
+    });
+    return state;
+  })
+
+// TODO edit, lock, twitter streaming API
+
 const state$ = Rx.Observable
-  .merge(init$, add$)
+  .merge(init$, add$, edit$)
   .scan(
     (state, changeFn) => changeFn(state),
     {
@@ -163,7 +169,7 @@ const state$ = Rx.Observable
   );
 
 state$.subscribe(state => {
-  console.log('New state', state)
+  console.log('New state', state.appointments.length, state.isAuto)
   //appointments = state.appointments;
   /* TODO remove the global "appointments" altogether, but how to solve this for the onconnection init, that should
   only be send to the connecing client and not broadcasted? */
