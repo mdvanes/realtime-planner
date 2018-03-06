@@ -65,8 +65,8 @@ const connectionMessage$ =
     wss.on('connection', function connection(client){
       client.on('message', function (message){
         observer.next({
-          client: client,
-          message: message,
+          client,
+          message,
         })
       });
 
@@ -88,7 +88,11 @@ const connectionMessage$ =
       //     ' ' +
       //     req.connection.remoteAddress
       // );
-      client.send(JSON.stringify({ type: 'init', id: client.id, auto, appointments }));
+      //client.send(JSON.stringify({ type: 'init', id: client.id, auto, appointments }));
+      observer.next({
+        client,
+        message: null
+      })
       // appointments.push(appointment.createRandom());
       //stateSubject.next({ auto, appointments }); // TODO remove
 
@@ -96,9 +100,11 @@ const connectionMessage$ =
       //randomAdd(ws);
     });
   })
-  .map(message => {
-    const parsedMessage = JSON.parse(message.message);
-    return parsedMessage.message;
+  .map(container => {
+    //console.log('c1', container);
+    container.parsedMessage = container.message ? JSON.parse(container.message).message : { type: 'init' };
+    //console.log('c2', container.parsedMessage);
+    return container;
   });
 
 // connectionMessage$.subscribe(function (cm) {
@@ -107,46 +113,74 @@ const connectionMessage$ =
 //   console.log('incoming message', cm.client.id, cm.message);
 // });
 
+const init$ = connectionMessage$
+  .filter(container => container.parsedMessage.type === 'init')
+  .map(container => state => {
+    // TODO use destructuring for container.client
+    container.client.send(JSON.stringify({
+      type: 'init',
+      id: container.client.id,
+      auto: state.isAuto,
+      appointments: state.appointments
+    }));
+    return state;
+  })
+
 const add$ = connectionMessage$
-  .filter((message) => message.type === 'add')
-  .map(() => {
+  .filter(message => message.parsedMessage.type === 'add')
+  .map(() => state => {
     const newAppointment = appointment.createRandom();
-    appointments.push(newAppointment);
+    // TODO how to solve this side-effect? See also todo below
     stateSubject.next({
       type: 'add',
       appointment: newAppointment
     });
+    return Object.assign({}, state, {
+      //newAppointment,
+      appointments: [
+        newAppointment,
+        ...state.appointments
+      ]
+    })
   });
-  // .map((message: any) => state => {
-  //   const newAppointment =
-  //   const newAppointments = [];
-  //   return Object.assign({}, state, {
-  //     appointments: message.appointments,
-  //     clientId: message.id,
-  //     isAuto: message.auto
+  // .map(() => {
+  //   const newAppointment = appointment.createRandom();
+  //   appointments.push(newAppointment);
+  //   stateSubject.next({
+  //     type: 'add',
+  //     appointment: newAppointment
   //   });
+  // });
 
-add$.subscribe(function (cm) {
-  // cm.client for client
-  // cm.message for message
-  // TODO restore cm.client / cm.message here: console.log('incoming add message', cm.client.id, cm.message);
-  console.log('incoming add message', cm);
+const state$ = Rx.Observable
+  .merge(init$, add$)
+  .scan(
+    (state, changeFn) => changeFn(state),
+    {
+      appointments: [],
+      isAuto: false
+    }
+  );
+
+state$.subscribe(state => {
+  console.log('New state', state)
+  //appointments = state.appointments;
+  /* TODO remove the global "appointments" altogether, but how to solve this for the onconnection init, that should
+  only be send to the connecing client and not broadcasted? */
 });
 
-// const foo$ = connectionMessage$.filter( message => {
-//   console.log('1', message);
-//   console.log(typeof message.message, message.message, message.message.message)
-//   const parsed = JSON.parse(message.message);
-//   console.log(parsed.message.type);
-//   return true;
-// } )
-// foo$.subscribe(function (cm) {
-//   // cm.client for client
-//   // cm.message for message
-//   console.log('incoming add message', cm.client.id, cm.message, typeof appointment);
-// });
+/*
+TODO on the client side all streams (e.g. add$, lock$) are merged and and scanned to update
+the state and emit for each update on a state$ stream.
+Then the subscription on state$ always handles the full UI with the complete new state.
+However, that is not what would be efficient here, because on add only the new row should be send.
+On lock only the ID, and only on init the full state. What would be a good solution?
 
-// TODO use state like in wsStream.ts on the client side, merge all streams.
+If cm.client/cm.message is needed in the subscribe, they should be stored in the state when
+mapping.
+
+See also "stateSubject.next" side effect in add$.map
+ */
 
 // wss.on('connection', function connection(ws /*, req*/) {
 //   // Error: message/onmessage is invalid event target
