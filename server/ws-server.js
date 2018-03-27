@@ -108,7 +108,7 @@ const connectionMessage$ =
   });
 
 const init$ = connectionMessage$
-  .filter(({ parsedMessage }) => parsedMessage.type === 'init')
+  .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'init')
   .map(({ client }) => state => {
     client.send(JSON.stringify({
       type: 'init',
@@ -120,7 +120,7 @@ const init$ = connectionMessage$
   })
 
 const add$ = connectionMessage$
-  .filter(({ parsedMessage }) => parsedMessage.type === 'add')
+  .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'add')
   .map(() => state => {
     const newAppointment = appointment.createRandom();
     // TODO how to solve this side-effect? See also todo below
@@ -155,8 +155,6 @@ const edit$ = connectionMessage$
     });
     return state;
   })
-
-// TODO edit, lock, twitter streaming API
 
 const state$ = Rx.Observable
   .merge(init$, add$, edit$)
