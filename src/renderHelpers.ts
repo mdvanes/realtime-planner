@@ -18,10 +18,10 @@ function unwrapButton(elem: any) {
   }
 }
 
-export function doInitRender(vTable: VTable, send) {
-  const output = partial.renderTable(vTable.getAppointments());
+export function doInitRender(send) {
+  //const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
-  tableWrapperElem.innerHTML = output;
+  //tableWrapperElem.innerHTML = output;
 
   addEditDialog();
 
@@ -30,7 +30,7 @@ export function doInitRender(vTable: VTable, send) {
     alert('Browser does not have native support for dialog element');
   }
   dialog.querySelector('.close').addEventListener('click', () => {
-    send(JSON.stringify({ type: 'edit', forId: null }));
+    send(JSON.stringify({ message: {type: 'edit', forId: null }}));
     dialog.close();
   });
 
@@ -41,7 +41,7 @@ export function doInitRender(vTable: VTable, send) {
     )
     .map((ev: any) => unwrapButton(ev.target).getAttribute('data-apt-id'));
   tableWrapperObservable.subscribe(aptId => {
-    send(JSON.stringify({ type: 'edit', forId: aptId }));
+    send(JSON.stringify({ message: { type: 'edit', forId: aptId }}));
     dialog.showModal();
   });
 
@@ -54,12 +54,12 @@ function addEditDialog() {
 }
 
 // TODO remove?
-// export function doNextRender(vTable: VTable) {
-//   const output = partial.renderTable(vTable.getAppointments());
-//   const tableWrapperElem = document.getElementById('appointments-table');
-//   tableWrapperElem.innerHTML = output;
-//   renderEffects();
-// }
+export function doNextRender(vTable: VTable) {
+  const output = partial.renderTable(vTable.getAppointments());
+  const tableWrapperElem = document.getElementById('appointments-table');
+  tableWrapperElem.innerHTML = output;
+  renderEffects();
+}
 
 function renderEffects() {
   const lockedRowElem = document.querySelector('.is-locked');

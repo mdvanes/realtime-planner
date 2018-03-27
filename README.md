@@ -85,3 +85,7 @@ Planning
 * combine with redux
 * Firebase and hosting
 * Try out https://stenciljs.com/
+
+* webpack 4
+// TODO edit (bug), lock, twitter streaming API, TypeScript
+* bug: add, add, edit (highlighting on the last added row will show again, but should not)

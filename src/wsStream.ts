@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import { Appointment } from './Appointment';
 import { notificationTitle } from './notification';
-import { doInitRender, renderControls } from './renderHelpers';
+import { doInitRender, renderControls, doNextRender } from './renderHelpers';
 import vTable from './vTable';
 
 let appointmentsVTable: vTable = null;
@@ -181,13 +181,15 @@ export default function initWsStream() {
       });
       // TODO vTable has no purpose anymore? Do sort here?
       appointmentsVTable = new vTable(state.appointments);
-      doInitRender(appointmentsVTable, (payload: string) => {
-        ws$.next(payload);
-      });
+      doNextRender(appointmentsVTable);
     },
     err => console.error('an error on state$', err),
     () => console.log('state$ completed')
   );
+
+  doInitRender((payload: string) => {
+    ws$.next(payload);
+  });
   /* TODO automatically re-connect web socket if server restarts and get state -
    https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/
    */
