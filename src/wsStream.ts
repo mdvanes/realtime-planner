@@ -134,7 +134,6 @@ export default function initWsStream() {
           })
         ]
       });
-      // TODO delete apt.isAdded also for any message type other then "add", current bug: try adding and then locking
     });
 
   const lock$ = ws$
@@ -146,6 +145,7 @@ export default function initWsStream() {
       const newAppointments = state.appointments.map((apt: Appointment) => {
         apt.isLocked = apt.aptId.toString() === message.forAptId;
         apt.byClientId = message.byClientId;
+        delete apt.isAdded; // TODO instead of duplicating this logic for each event type, auto remove isAdded after the effect has run
         return apt;
       });
       return Object.assign({}, state, {

@@ -88,4 +88,4 @@ Planning
 
 * webpack 4
 // TODO edit (bug), lock, twitter streaming API, TypeScript
-* bug: add, add, edit (highlighting on the last added row will show again, but should not)
+* auto
