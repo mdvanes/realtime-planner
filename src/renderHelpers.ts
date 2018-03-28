@@ -19,9 +19,7 @@ function unwrapButton(elem: any) {
 }
 
 export function doInitRender(send) {
-  //const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
-  //tableWrapperElem.innerHTML = output;
 
   addEditDialog();
 
@@ -53,7 +51,6 @@ function addEditDialog() {
   document.getElementById('dialog-wrapper').innerHTML = output;
 }
 
-// TODO remove?
 export function doNextRender(vTable: VTable) {
   const output = partial.renderTable(vTable.getAppointments());
   const tableWrapperElem = document.getElementById('appointments-table');
