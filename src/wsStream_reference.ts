@@ -7,8 +7,86 @@ import vTable from './vTable';
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
 
+// function processAddMessage(message: any) {
+//   appointmentsVTable.add(message.appointment);
+//   doNextRender(appointmentsVTable);
+//   updateTitle();
+// }
+//
+// function processLockMessage(message: any) {
+//   appointmentsVTable.lock(message.forAptId, message.byClientId);
+//   doNextRender(appointmentsVTable);
+// }
+
 export default function initWsStream() {
-  // Implementation conform state store pattern - http://reactivex.io/rxjs/manual/tutorial.html#state-stores
+  /*
+  // Manage subscriptions manually / imperatively.
+  //const init$ = subject
+  //  .filter(x => x.type === 'init')
+  //init$.subscribe()
+  const add$ = subject.filter(x => x.type === 'add')
+  add$.subscribe()
+  etc ...
+
+  // Anti pattern to have a lot of subscribe()
+  const add$ = subject.filter(x => x.type === 'add')
+    .map(handle the thingy)
+
+  const lock$ = ...
+  const stream$ = Rx.observable.merge(add$, lock$, .).subscribe()
+
+  // Init is an exception, because happens once
+  const init$ = subject.filter(x => x.type === 'add')
+    .map(handle the thingy)
+    .first()
+   */
+  /** Implementation conform "filter type" pattern **/
+  // const ws$ = Observable.webSocket('ws://localhost:9001');
+  // const init$ = ws$
+  //   .filter((message: any) => message.type === 'init')
+  //   .map((initMessage: any) => {
+  //     // Receiving the initial state, including the ID
+  //     setClientId(initMessage.id);
+  //     renderControls(initMessage, (payload: string) => {
+  //       ws$.next(payload); // TODO is there no better way than to supply ws$ here?
+  //     });
+  //     appointmentsVTable = new vTable(initMessage.appointments);
+  //     doInitRender(appointmentsVTable, (payload: string) => {
+  //       ws$.next(payload);
+  //     });
+  //   })
+  //   .first(); // closes the subscription after completion
+  //
+  // const add$ = ws$
+  //   .filter((message: any) => message.type === 'add')
+  //   .map(processAddMessage);
+  //
+  // const lock$ = ws$
+  //   .filter(
+  //     (message: any) =>
+  //       message.type === 'lock' && message.byClientId !== clientId
+  //   )
+  //   .map(processLockMessage);
+  //
+  // const auto$ = ws$
+  //   .filter((message: any) => message.type === 'auto')
+  //   .map((message: any) => {
+  //     renderControls(message, (payload: string) => {
+  //       ws$.next(payload);
+  //     });
+  //   });
+  //
+  // // Avoid multiple subscriptions
+  // Observable.merge(init$, add$, lock$, auto$)
+  //   // retry(10) ?
+  //   .subscribe(
+  //     msg => {
+  //       // TODO still needed?
+  //     },
+  //     err => console.log(err),
+  //     () => console.log('complete')
+  //   );
+  /** Implementation conform state store pattern - http://reactivex.io/rxjs/manual/tutorial.html#state-stores **/
   const ws$ = Observable.webSocket('ws://localhost:9001');
 
   const init$ = ws$
