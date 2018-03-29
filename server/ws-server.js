@@ -156,8 +156,29 @@ const edit$ = connectionMessage$
     return state;
   })
 
+const auto$ = connectionMessage$
+  .filter(({ parsedMessage }) => parsedMessage.type === 'auto')
+  .map(() => state => {
+    const isAuto = !state.isAuto;
+    stateSubject.next({ type: 'auto', isAuto });
+    // If auto=true, send random locks
+    if (isAuto) {
+      emulateBehavior(state.appointments);
+    } else if (autoTimeoutId) {
+      clearTimeout(autoTimeoutId);
+      stateSubject.next({
+        type: 'lock',
+        forAptId: null,
+        byClientId: 'AUTO'
+      });
+    }
+    return Object.assign({}, state, {
+      isAuto: !state.isAuto
+    });
+  });
+
 const state$ = Rx.Observable
-  .merge(init$, add$, edit$)
+  .merge(init$, add$, edit$, auto$)
   .scan(
     (state, changeFn) => changeFn(state),
     {
@@ -260,23 +281,24 @@ See also "stateSubject.next" side effect in add$.map
 //   //randomAdd(ws);
 // });
 
-function emulateBehavior() {
+// Now it will use the appointments that existed at the moment "auto" was toggled to "on", and ignore newly added appointments.
+function emulateBehavior(stateAppointments) {
   const minMs = 1000;
   const maxMs = 30000;
   const delay = Math.floor(Math.random() * maxMs + minMs);
   let aptId = null;
-  if (appointments.length > 0) {
-    const apIndex = Math.floor(Math.random() * appointments.length);
-    aptId = appointments[apIndex].aptId;
+  if (stateAppointments.length > 0) {
+    const apIndex = Math.floor(Math.random() * stateAppointments.length);
+    aptId = stateAppointments[apIndex].aptId.toString();
   }
   console.log(`Will emulate lock in ${delay}ms on`, aptId);
   autoTimeoutId = setTimeout(function() {
     stateSubject.next({
       type: 'lock',
-      forAptId: aptId.toString(),
+      forAptId: aptId,
       byClientId: 'AUTO'
     });
-    emulateBehavior();
+    emulateBehavior(stateAppointments);
   }, delay);
 }
 
