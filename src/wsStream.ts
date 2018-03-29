@@ -112,7 +112,7 @@ export default function initWsStream() {
   const add$ = ws$
     .filter((message: any) => message.type === 'add')
     .map((message: any) => state => {
-      // TODO get rid of this side effect -> make "title" a property in state
+      // TODO get rid of this side effect -> make "title" a property in state x
       updateTitle();
       // Not inline:
       // const newAppointments = state.appointments.map((apt: Appointment) => {
@@ -157,7 +157,13 @@ export default function initWsStream() {
     .filter((message: any) => message.type === 'auto')
     .map((message: any) => state =>
       Object.assign({}, state, {
-        isAuto: message.auto
+        isAuto: message.isAuto,
+        appointments: [
+          ...state.appointments.map((apt: Appointment) => {
+            delete apt.isAdded; // TODO instead of duplicating this logic for each event type, auto remove isAdded after the effect has run
+            return apt;
+          })
+        ]
       })
     );
 

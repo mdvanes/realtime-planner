@@ -10,7 +10,7 @@ export function renderToggle(isAuto: boolean) {
     classNames += ' mdl-button--accent';
   }
   return `<button class="${classNames}" id="button-auto">
-        auto ${isAuto}
+        auto
     </button>`;
 }
 
