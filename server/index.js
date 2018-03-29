@@ -3,5 +3,7 @@ const server = require('./ws-server');
 
 process.env.PORT = 9001; // TODO
 server.listen(process.env.PORT, function() {
+  /* eslint-disable */
   console.log(`http/ws server listening on ${process.env.PORT}`);
+  /* eslint-enable */
 });
