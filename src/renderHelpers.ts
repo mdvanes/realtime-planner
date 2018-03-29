@@ -28,7 +28,7 @@ export function doInitRender(send) {
     alert('Browser does not have native support for dialog element');
   }
   dialog.querySelector('.close').addEventListener('click', () => {
-    send(JSON.stringify({ message: {type: 'edit', forId: null }}));
+    send(JSON.stringify({ message: { type: 'edit', forId: null } }));
     dialog.close();
   });
 
@@ -39,7 +39,7 @@ export function doInitRender(send) {
     )
     .map((ev: any) => unwrapButton(ev.target).getAttribute('data-apt-id'));
   tableWrapperObservable.subscribe(aptId => {
-    send(JSON.stringify({ message: { type: 'edit', forId: aptId }}));
+    send(JSON.stringify({ message: { type: 'edit', forId: aptId } }));
     dialog.showModal();
   });
 
@@ -93,10 +93,14 @@ function subscribeToButtonClicks(send) {
   const buttonAdd = document.getElementById('button-add');
   const buttonAddObs = Observable.fromEvent(buttonAdd, 'click');
 
-  buttonAddObs.subscribe(_ => send(JSON.stringify({ message: { type: 'add'} })));
+  buttonAddObs.subscribe(_ =>
+    send(JSON.stringify({ message: { type: 'add' } }))
+  );
 
   const buttonAuto = document.getElementById('button-auto');
   const buttonAutoObs = Observable.fromEvent(buttonAuto, 'click');
 
-  buttonAutoObs.subscribe(_ => send(JSON.stringify({ message: { type: 'auto' } })));
+  buttonAutoObs.subscribe(_ =>
+    send(JSON.stringify({ message: { type: 'auto' } }))
+  );
 }

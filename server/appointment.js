@@ -87,11 +87,8 @@ function randomizeDate() {
   const timeslots = [9, 10, 13, 14];
   const timeslot = timeslots[Math.floor(Math.random() * timeslots.length)];
   const timeOffsetMs = 1000 * 60 * 60 * timeslot;
-  console.log('baseDate', baseDate, timeslot);
   const result = baseDate.getTime() + oneWeekMs + dayOffsetMs + timeOffsetMs;
   return result;
-  // return new Date(result);
-  // return (new Date()).getTime();
 }
 
 module.exports = class Appointment {
@@ -105,7 +102,6 @@ module.exports = class Appointment {
   }
 
   static createRandom() {
-    console.log('a random appointment');
     const firstName = randomizeFirstName();
     const lastName = randomizeLastName();
     return new Appointment(

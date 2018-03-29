@@ -78,14 +78,13 @@ Planning
 * 23-1 Set up a backend with web sockets
 * 23-1 Randomly generate events from a Node back-end that should show real-time updates in the table
 * 30-1 Show a table with appointments and the status (in-use, deleted, free, etc)
-* 30-1 Try out https://parceljs.org/ and ts-node and sentry.io 
-* Replace innerHTML with cloneNode: http://blog.teamtreehouse.com/creating-reusable-markup-with-the-html-template-element
-* 30-1 Render the table with RxJS
-* 6-2 multiple streams
-* combine with redux
+* 1-3 Replace innerHTML with cloneNode: http://blog.teamtreehouse.com/creating-reusable-markup-with-the-html-template-element
+* 1-3 Render the table with RxJS
+* 27-3 Refactor front-end and back-end to use RxJS state store
+* 3-4 get rid of this side effect -> make "title" a property in state
+* 3-4 Try out ts-node (refactor back-end to TypeScript) and sentry.io 
+* 3-4 multiple streams (Twitter streaming API)
+* 9-4 Webpack 4, ParcelJS
+* combine with Redux
 * Firebase and hosting
 * Try out https://stenciljs.com/
-
-* webpack 4
-// TODO edit (bug), lock, twitter streaming API, TypeScript
-* auto

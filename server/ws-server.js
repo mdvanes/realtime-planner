@@ -60,64 +60,55 @@ listener {Function} The listener to add.
 // Also mount the app here
 server.on('request', app);
 
-const connectionMessage$ =
-  new Rx.Observable(function (observer) {
-    wss.on('connection', function connection(client){
-      client.on('message', function (message){
-        observer.next({
-          client,
-          message,
-        })
-      });
-
-      client.on('error', err => {
-        if (err.code === 'ECONNRESET') {
-          console.log('Warning: user disconnected forcibly'); // e.g. F5
-        } else {
-          throw err;
-        }
-      });
-
-      client.on('close', () => restoreId(client.id));
-
-      console.log('A web socket connection was made', typeof emulateBehavior, typeof autoTimeoutId);
-      client.id = getId();
-      // console.log(
-      //   'ws id =' +
-      //     req.headers['x-forwarded-for'] +
-      //     ' ' +
-      //     req.connection.remoteAddress
-      // );
-      //client.send(JSON.stringify({ type: 'init', id: client.id, auto, appointments }));
+const connectionMessage$ = new Rx.Observable(function(observer) {
+  wss.on('connection', function connection(client) {
+    client.on('message', function(message) {
       observer.next({
         client,
-        message: null
-      })
-      // appointments.push(appointment.createRandom());
-      //stateSubject.next({ auto, appointments }); // TODO remove
-
-      // Randomly send updated appointments
-      //randomAdd(ws);
+        message
+      });
     });
-  })
-  .map(container => {
-    //console.log('c1', container);
-    container.parsedMessage = container.message ? JSON.parse(container.message).message : { type: 'init' };
-    console.log('c2', container.parsedMessage);
-    return container;
+
+    client.on('error', err => {
+      if (err.code === 'ECONNRESET') {
+        // e.g. F5
+        console.log('Warning: user disconnected forcibly'); // eslint-disable-line
+      } else {
+        throw err;
+      }
+    });
+
+    client.on('close', () => restoreId(client.id));
+
+    client.id = getId();
+    observer.next({
+      client,
+      message: null
+    });
+    // Randomly send updated appointments
+    //randomAdd(ws);
   });
+}).map(container => {
+  //console.log('c1', container);
+  container.parsedMessage = container.message
+    ? JSON.parse(container.message).message
+    : { type: 'init' };
+  return container;
+});
 
 const init$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'init')
   .map(({ client }) => state => {
-    client.send(JSON.stringify({
-      type: 'init',
-      id: client.id,
-      auto: state.isAuto,
-      appointments: state.appointments
-    }));
+    client.send(
+      JSON.stringify({
+        type: 'init',
+        id: client.id,
+        auto: state.isAuto,
+        appointments: state.appointments
+      })
+    );
     return state;
-  })
+  });
 
 const add$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'add')
@@ -130,20 +121,17 @@ const add$ = connectionMessage$
     });
     return Object.assign({}, state, {
       //newAppointment,
-      appointments: [
-        newAppointment,
-        ...state.appointments
-      ]
-    })
+      appointments: [newAppointment, ...state.appointments]
+    });
   });
-  // .map(() => {
-  //   const newAppointment = appointment.createRandom();
-  //   appointments.push(newAppointment);
-  //   stateSubject.next({
-  //     type: 'add',
-  //     appointment: newAppointment
-  //   });
-  // });
+// .map(() => {
+//   const newAppointment = appointment.createRandom();
+//   appointments.push(newAppointment);
+//   stateSubject.next({
+//     type: 'add',
+//     appointment: newAppointment
+//   });
+// });
 
 const edit$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage.type === 'edit')
@@ -154,7 +142,7 @@ const edit$ = connectionMessage$
       byClientId: client.id
     });
     return state;
-  })
+  });
 
 const auto$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage.type === 'auto')
@@ -177,18 +165,16 @@ const auto$ = connectionMessage$
     });
   });
 
-const state$ = Rx.Observable
-  .merge(init$, add$, edit$, auto$)
-  .scan(
-    (state, changeFn) => changeFn(state),
-    {
-      appointments: [],
-      isAuto: false
-    }
-  );
+const state$ = Rx.Observable.merge(init$, add$, edit$, auto$).scan(
+  (state, changeFn) => changeFn(state),
+  {
+    appointments: [],
+    isAuto: false
+  }
+);
 
 state$.subscribe(state => {
-  console.log('New state', state.appointments.length, state.isAuto)
+  console.log('New state', state.appointments.length, state.isAuto);
   //appointments = state.appointments;
   /* TODO remove the global "appointments" altogether, but how to solve this for the onconnection init, that should
   only be send to the connecing client and not broadcasted? */
@@ -291,7 +277,7 @@ function emulateBehavior(stateAppointments) {
     const apIndex = Math.floor(Math.random() * stateAppointments.length);
     aptId = stateAppointments[apIndex].aptId.toString();
   }
-  console.log(`Will emulate lock in ${delay}ms on`, aptId);
+  console.log(`Will emulate lock in ${delay}ms on`, aptId); // eslint-disable-line
   autoTimeoutId = setTimeout(function() {
     stateSubject.next({
       type: 'lock',
