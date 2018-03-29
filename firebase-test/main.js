@@ -1,6 +1,6 @@
 import Test from './test.js';
 //import Rx from './node_modules/rxjs/bundles/Rx.js';
-import * as Rx from './node_modules/rxjs/Rx.js';
+import * as Rx from '../node_modules/rxjs/Rx.js';
 
 console.log('hi', new Test());
 
