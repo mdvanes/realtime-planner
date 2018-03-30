@@ -1,7 +1,5 @@
 export const UP_TO_DATE: string = 'Up to date';
 
-// TODO convert to do this without state
-
 class NotificationTitle {
   private counter: number;
 
@@ -17,23 +15,11 @@ class NotificationTitle {
     }
   }
 
-  public addAndGetTitle() {
-    this.add();
+  public updateAndGetTitle(titleCounter: number) {
+    this.counter = titleCounter;
     return this.getTitle();
   }
 
-  public resetAndGetTitle() {
-    this.reset();
-    return this.getTitle();
-  }
-
-  private add() {
-    this.counter++;
-  }
-
-  private reset() {
-    this.counter = 0;
-  }
 }
 
 export const notificationTitle: NotificationTitle = new NotificationTitle();

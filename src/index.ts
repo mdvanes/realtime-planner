@@ -3,17 +3,3 @@ import { notificationTitle } from './notification';
 import initWsStream from './wsStream';
 
 initWsStream();
-
-function setTitle() {
-  if (!document.hidden) {
-    document.title = notificationTitle.resetAndGetTitle();
-  }
-}
-
-function observeWindowFocus() {
-  // visibilitychange for tab changes, window.onfocus for window changes
-  const subject = Observable.fromEvent(document, 'visibilitychange');
-  subject.subscribe(setTitle);
-  window.onfocus = setTitle;
-}
-observeWindowFocus();
