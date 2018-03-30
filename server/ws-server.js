@@ -20,8 +20,8 @@ const stateSubject = new Rx.Subject();
 // Ids for web socket clients. If non available, create UUID
 const availableIds = [
   'Unidentified Ursula',
-  'Jane Doe',
   'Random Robby',
+  'Jane Doe',
   'Anonymous Albert'
 ];
 function getId() {
@@ -60,8 +60,13 @@ listener {Function} The listener to add.
 // Also mount the app here
 server.on('request', app);
 
+// Sequence called multiple times: https://github.com/Reactive-Extensions/RxJS/issues/294
 const connectionMessage$ = new Rx.Observable(function(observer) {
+  //console.log('New observable')
+
   wss.on('connection', function connection(client) {
+    //console.log('New connection', Date.now())
+
     client.on('message', function(message) {
       observer.next({
         client,
@@ -94,7 +99,8 @@ const connectionMessage$ = new Rx.Observable(function(observer) {
     ? JSON.parse(container.message).message
     : { type: 'init' };
   return container;
-});
+})
+.share();
 
 const init$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'init')
@@ -176,8 +182,7 @@ const state$ = Rx.Observable.merge(init$, add$, edit$, auto$).scan(
 state$.subscribe(state => {
   console.log('New state', state.appointments.length, state.isAuto);
   //appointments = state.appointments;
-  /* TODO remove the global "appointments" altogether, but how to solve this for the onconnection init, that should
-  only be send to the connecing client and not broadcasted? */
+  /* TODO remove the global "appointments" altogether */
 });
 
 /*
@@ -273,11 +278,13 @@ function emulateBehavior(stateAppointments) {
   const maxMs = 30000;
   const delay = Math.floor(Math.random() * maxMs + minMs);
   let aptId = null;
+  let readableId = null;
   if (stateAppointments.length > 0) {
     const apIndex = Math.floor(Math.random() * stateAppointments.length);
     aptId = stateAppointments[apIndex].aptId.toString();
+    readableId = stateAppointments[apIndex].email;
   }
-  console.log(`Will emulate lock in ${delay}ms on`, aptId); // eslint-disable-line
+  console.log(`Will emulate lock in ${delay}ms on ${readableId}`); // eslint-disable-line
   autoTimeoutId = setTimeout(function() {
     stateSubject.next({
       type: 'lock',
