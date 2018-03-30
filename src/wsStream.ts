@@ -34,8 +34,6 @@ export default function initWsStream() {
   const add$ = ws$
     .filter((message: any) => message.type === 'add')
     .map((message: any) => state => {
-      // TODO get rid of this side effect -> make "title" a property in state
-      updateTitle();
       // Not inline:
       // const newAppointments = state.appointments.map((apt: Appointment) => {
       //   delete apt.isAdded;
@@ -54,7 +52,22 @@ export default function initWsStream() {
             delete apt.isAdded;
             return apt;
           })
-        ]
+        ],
+        titleCounter: !document.hasFocus() ? ++state.titleCounter : 0
+      });
+    });
+
+  // const visibilityChange$ = Observable.fromEvent(document, 'visibilitychange')
+  //   .map(() => state => {
+  //     return Object.assign({}, state, {
+  //       titleCounter: !document.hasFocus() ? state.titleCounter : 0
+  //     });
+  //   });
+
+  const documentFocus$ = Observable.fromEvent(window, 'focus')
+    .map(() => state => {
+      return Object.assign({}, state, {
+        titleCounter: !document.hasFocus() ? state.titleCounter : 0
       });
     });
 
@@ -94,12 +107,13 @@ export default function initWsStream() {
   // TODO implement delete message
 
   // Setting the initial state before receiving the initial server state
-  const state$ = Observable.merge(init$, add$, auto$, lock$).scan(
+  const state$ = Observable.merge(init$, add$, auto$, lock$, documentFocus$).scan(
     (state: any, changeFn) => changeFn(state),
     {
       appointments: [],
       clientId: '',
-      isAuto: false
+      isAuto: false,
+      titleCounter: 0
     }
   );
 
@@ -112,6 +126,7 @@ export default function initWsStream() {
       // TODO vTable has no purpose anymore? Do sort here?
       appointmentsVTable = new vTable(state.appointments);
       doNextRender(appointmentsVTable);
+      document.title = notificationTitle.updateAndGetTitle(state.titleCounter);
     },
     err => console.error('an error on state$', err),
     () => console.log('state$ completed')
@@ -128,14 +143,4 @@ export default function initWsStream() {
 function setClientId(id) {
   document.getElementById('clientId').innerHTML = id;
   clientId = id;
-}
-
-function updateTitle() {
-  // Update of state
-  if (!document.hasFocus()) {
-    // TODO it is probably bad practice to set this in two places (also in observeWindowFocus)
-    document.title = notificationTitle.addAndGetTitle();
-  } else {
-    document.title = notificationTitle.resetAndGetTitle();
-  }
 }
