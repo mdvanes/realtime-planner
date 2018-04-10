@@ -84,6 +84,9 @@ Planning
 * ✅ 3-4 get rid of this side effect -> make "title" a property in state
 * 3-4 multiple streams (e.g. Twitter streaming API)
     * https://github.com/toddmotto/public-apis
+    * nc pub-vrs.adsbexchange.com 32030
+    * nc pub-vrs.adsbexchange.com/VirtualRadar/AircraftList.json?lat=33.433638&lng=-112.008113&fDstL=0&fDstU=100 32030
+    * https://www.webgenerator.nl/twitter-api-key-api-secret-access-token-secret/
     * https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
     * https://www.npmjs.com/package/twitter-stream-api
 * 9-4 Try out ts-node (refactor back-end to TypeScript) and sentry.io 
