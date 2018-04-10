@@ -4,8 +4,12 @@ const server = require('http').createServer();
 //const wss = new WebSocket.Server({ port: 9001, path: 'realtime', origin: 'http://localhost:9000' });
 const wss = new WebSocket.Server({ server });
 const appointments = require('./appointments');
-const appointment = require('./appointment');
+const Appointment = require('./appointment');
 const Rx = require('rxjs/Rx');
+const TwitterStream = require('twitter-stream-api');
+const fs = require('fs');
+const keysString = fs.readFileSync('./keys.json');
+const keys = JSON.parse(keysString);
 
 let auto = false;
 let autoTimeoutId = null;
@@ -119,7 +123,7 @@ const init$ = connectionMessage$
 const add$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'add')
   .map(() => state => {
-    const newAppointment = appointment.createRandom();
+    const newAppointment = Appointment.createRandom();
     // TODO how to solve this side-effect? See also todo below
     stateSubject.next({
       type: 'add',
@@ -297,5 +301,43 @@ function emulateBehavior(stateAppointments) {
 
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port
 //http.createServer(app).listen(9001, () => console.log('Listening at http://localhost:9001') );
+
+
+
+// TODO: closure
+// TODO: only on "auto"
+// TODO: push "last tweet" to the front-end
+const Twitter = new TwitterStream(keys, false);
+Twitter.stream('statuses/filter', {
+  track: 'javascript, #ING' // TODO: We Are Here
+});
+
+const Writable = require('stream').Writable;
+const Output = Writable({objectMode: true});
+Output._write = function (obj, enc, next) {
+    const parsed = JSON.parse(obj.toString());
+    //console.log(parsed.id_str, parsed.text /*obj,*/ /*Object.getPrototypeOf(obj),*/ /*obj.toString()*/);
+    // console.log(new Date(parsed.user.created_at), 
+    // parsed.user.name, 
+    // '@', parsed.user.screen_name, 
+    // parsed.id_str)
+    const apt = new Appointment(
+      '', 
+      parsed.user.name, 
+      parsed.id_str, 
+      '@' + parsed.user.screen_name, 
+      new Date(parsed.user.created_at));
+    //console.log(apt);
+
+    // TODO: instead of this, it should throw an event to the server side state store
+    stateSubject.next({
+      type: 'add',
+      appointment: apt
+    });
+
+    next();
+};
+
+Twitter.pipe(Output);
 
 module.exports = server;
