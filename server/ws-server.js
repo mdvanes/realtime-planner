@@ -64,6 +64,37 @@ listener {Function} The listener to add.
 // Also mount the app here
 server.on('request', app);
 
+const twitter$ = new Rx.Observable(function(observer) {
+  const Twitter = new TwitterStream(keys, false);
+  Twitter.stream('statuses/filter', {
+    track: 'javascript, #ING' // Tracked tweet keywords
+  });
+  
+  Twitter.on('data', function (obj) {
+    const parsed = JSON.parse(obj.toString());
+    const apt = new Appointment(
+      '', 
+      parsed.user.name, 
+      parsed.id_str, 
+      '@' + parsed.user.screen_name, 
+      new Date(parsed.user.created_at));
+    observer.next({
+      apt
+    })
+  });  
+})
+.map(message => state => {
+  //console.log('foo', message);
+  stateSubject.next({
+    type: 'add',
+    appointment: message.apt
+  });
+  return Object.assign({}, state, {
+    appointments: [message.apt, ...state.appointments]
+  });
+})
+.share(); // only needed if demuxing with filters like below?
+
 // Sequence called multiple times: https://github.com/Reactive-Extensions/RxJS/issues/294
 const connectionMessage$ = new Rx.Observable(function(observer) {
   //console.log('New observable')
@@ -175,7 +206,7 @@ const auto$ = connectionMessage$
     });
   });
 
-const state$ = Rx.Observable.merge(init$, add$, edit$, auto$).scan(
+const state$ = Rx.Observable.merge(init$, add$, edit$, auto$, twitter$).scan(
   (state, changeFn) => changeFn(state),
   {
     appointments: [],
@@ -307,37 +338,42 @@ function emulateBehavior(stateAppointments) {
 // TODO: closure
 // TODO: only on "auto"
 // TODO: push "last tweet" to the front-end
-const Twitter = new TwitterStream(keys, false);
-Twitter.stream('statuses/filter', {
-  track: 'javascript, #ING' // TODO: We Are Here
-});
+// const Twitter = new TwitterStream(keys, false);
+// Twitter.stream('statuses/filter', {
+//   track: 'javascript, #ING' // TODO: We Are Here
+// });
 
-const Writable = require('stream').Writable;
-const Output = Writable({objectMode: true});
-Output._write = function (obj, enc, next) {
-    const parsed = JSON.parse(obj.toString());
-    //console.log(parsed.id_str, parsed.text /*obj,*/ /*Object.getPrototypeOf(obj),*/ /*obj.toString()*/);
-    // console.log(new Date(parsed.user.created_at), 
-    // parsed.user.name, 
-    // '@', parsed.user.screen_name, 
-    // parsed.id_str)
-    const apt = new Appointment(
-      '', 
-      parsed.user.name, 
-      parsed.id_str, 
-      '@' + parsed.user.screen_name, 
-      new Date(parsed.user.created_at));
-    //console.log(apt);
+// const Writable = require('stream').Writable;
+// const Output = Writable({objectMode: true});
+// Output._write = function (obj, enc, next) {
+//     const parsed = JSON.parse(obj.toString());
+//     //console.log(parsed.id_str, parsed.text /*obj,*/ /*Object.getPrototypeOf(obj),*/ /*obj.toString()*/);
+//     // console.log(new Date(parsed.user.created_at), 
+//     // parsed.user.name, 
+//     // '@', parsed.user.screen_name, 
+//     // parsed.id_str)
+//     const apt = new Appointment(
+//       '', 
+//       parsed.user.name, 
+//       parsed.id_str, 
+//       '@' + parsed.user.screen_name, 
+//       new Date(parsed.user.created_at));
+//     //console.log(apt);
 
-    // TODO: instead of this, it should throw an event to the server side state store
-    stateSubject.next({
-      type: 'add',
-      appointment: apt
-    });
+//     // TODO: instead of this, it should throw an event to the server side state store
+//     stateSubject.next({
+//       type: 'add',
+//       appointment: apt
+//     });
 
-    next();
-};
+//     next();
+// };
 
-Twitter.pipe(Output);
+// Twitter.pipe(Output);
+
+// Twitter.on('data', function (obj) {
+//   const parsed = JSON.parse(obj.toString());
+//   console.log('twitter on data', parsed);
+// });
 
 module.exports = server;
