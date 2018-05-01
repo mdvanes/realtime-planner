@@ -104,16 +104,26 @@ export default function initWsStream() {
       })
     );
 
+  const tweet$ = ws$
+    .filter((message: any) => message.type === 'tweet')
+    .map((message: any) => state => {
+      console.log('tweet msg', message.tweet);
+      return Object.assign({}, state, {
+        lastTweet: message.tweet
+      });
+    })  
+
   // TODO implement delete message
 
   // Setting the initial state before receiving the initial server state
-  const state$ = Observable.merge(init$, add$, auto$, lock$, documentFocus$).scan(
+  const state$ = Observable.merge(init$, add$, auto$, lock$, documentFocus$, tweet$).scan(
     (state: any, changeFn) => changeFn(state),
     {
       appointments: [],
       clientId: '',
       isAuto: false,
-      titleCounter: 0
+      titleCounter: 0,
+      lastTweet: null
     }
   );
 
@@ -127,6 +137,12 @@ export default function initWsStream() {
       appointmentsVTable = new vTable(state.appointments);
       doNextRender(appointmentsVTable);
       document.title = notificationTitle.updateAndGetTitle(state.titleCounter);
+      // TODO convert to hyper
+      if(state.lastTweet) {
+        document.querySelector('#last-tweet').innerHTML = `<a href="https://twitter.com/x/status/${state.lastTweet.id_str}">
+        "${state.lastTweet.text}" by ${state.lastTweet.username}
+        </a>`;
+      }
     },
     err => console.error('an error on state$', err),
     () => console.log('state$ completed')
