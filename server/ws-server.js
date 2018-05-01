@@ -72,12 +72,6 @@ const twitter$ = new Rx.Observable(function(observer) {
   
   Twitter.on('data', function (obj) {
     const parsed = JSON.parse(obj.toString());
-    // const apt = new Appointment(
-    //   '', 
-    //   parsed.user.name, 
-    //   parsed.id_str, 
-    //   '@' + parsed.user.screen_name, 
-    //   new Date(parsed.user.created_at));
     observer.next({
       tweet: parsed
     })
@@ -85,29 +79,32 @@ const twitter$ = new Rx.Observable(function(observer) {
 })
 .map(message => state => {
   //console.log('foo', message);
-  const newAppointment = new Appointment(
-    '', 
-    message.tweet.user.name, 
-    message.tweet.id_str, 
-    '@' + message.tweet.user.screen_name, 
-    new Date(message.tweet.user.created_at));
-  stateSubject.next({
-    type: 'add',
-    appointment: newAppointment
-  });
-  //console.log('tw', message.tweet.text);
-  stateSubject.next({
-    type: 'tweet',
-    tweet: {
-      username: message.tweet.user.name,
-      text: message.tweet.text,
-      timestamp: message.tweet.created_at,
-      id_str: message.tweet.id_str
-    }
-  });  
-  return Object.assign({}, state, {
-    appointments: [newAppointment, ...state.appointments]
-  });
+  if(state.isAuto) {
+    const newAppointment = new Appointment(
+      '', 
+      message.tweet.user.name, 
+      message.tweet.id_str, 
+      '@' + message.tweet.user.screen_name, 
+      new Date(message.tweet.user.created_at));
+    stateSubject.next({
+      type: 'add',
+      appointment: newAppointment
+    });
+    stateSubject.next({
+      type: 'tweet',
+      tweet: {
+        username: message.tweet.user.name,
+        text: message.tweet.text,
+        timestamp: message.tweet.created_at,
+        id_str: message.tweet.id_str
+      }
+    });  
+    return Object.assign({}, state, {
+      appointments: [newAppointment, ...state.appointments]
+    });  
+  } else {
+    return state;
+  }
 })
 .share(); // only needed if demuxing with filters like below?
 
@@ -348,14 +345,5 @@ function emulateBehavior(stateAppointments) {
 
 // https://stackoverflow.com/questions/34808925/express-and-websocket-listening-on-the-same-port
 //http.createServer(app).listen(9001, () => console.log('Listening at http://localhost:9001') );
-
-
-
-
-// TODO: only on "auto"
-// TODO: push "last tweet" to the front-end
-
-
-
 
 module.exports = server;

@@ -82,15 +82,16 @@ Planning
 * ✅ 1-3 Render the table with RxJS
 * ✅ 27-3 Refactor front-end and back-end to use RxJS state store
 * ✅ 3-4 get rid of this side effect -> make "title" a property in state
-* 3-4 multiple streams (e.g. Twitter streaming API)
+* ✅ 1-5 multiple streams (e.g. Twitter streaming API)
     * https://github.com/toddmotto/public-apis
     * nc pub-vrs.adsbexchange.com 32030
     * nc pub-vrs.adsbexchange.com/VirtualRadar/AircraftList.json?lat=33.433638&lng=-112.008113&fDstL=0&fDstU=100 32030
     * https://www.webgenerator.nl/twitter-api-key-api-secret-access-token-secret/
     * https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
     * https://www.npmjs.com/package/twitter-stream-api
-* 9-4 Try out ts-node (refactor back-end to TypeScript) and sentry.io 
-* 9-4 Webpack 4, ParcelJS
+* 8-5 hyperapp/lit-html for reactive rendering (e.g. of the last tweet)
+* 8-5 Try out sentry.io 
+* 8-5 Webpack 4, ParcelJS
 * combine with Redux
 * Firebase and hosting
 * Try out https://stenciljs.com/

@@ -107,7 +107,6 @@ export default function initWsStream() {
   const tweet$ = ws$
     .filter((message: any) => message.type === 'tweet')
     .map((message: any) => state => {
-      console.log('tweet msg', message.tweet);
       return Object.assign({}, state, {
         lastTweet: message.tweet
       });
