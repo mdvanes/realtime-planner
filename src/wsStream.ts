@@ -4,6 +4,7 @@ import { notificationTitle } from './notification';
 import { doInitRender, doNextRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
 import { bind } from 'hyperhtml/esm';
+import './MyLastTweet';
 
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
