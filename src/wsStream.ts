@@ -3,6 +3,7 @@ import { Appointment } from './Appointment';
 import { notificationTitle } from './notification';
 import { doInitRender, doNextRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
+import { bind } from 'hyperhtml/esm';
 
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
@@ -136,12 +137,8 @@ export default function initWsStream() {
       appointmentsVTable = new vTable(state.appointments);
       doNextRender(appointmentsVTable);
       document.title = notificationTitle.updateAndGetTitle(state.titleCounter);
-      // TODO convert to hyper
       if (state.lastTweet) {
-        document.querySelector('#last-tweet').innerHTML = `<a
-        href="https://twitter.com/x/status/${state.lastTweet.id_str}">
-        "${state.lastTweet.text}" by ${state.lastTweet.username}
-        </a>`;
+        renderLastTweet(bind(document.querySelector('#last-tweet')), state);
       }
     },
     err => console.error('an error on state$', err), // eslint-disable-line
@@ -154,6 +151,12 @@ export default function initWsStream() {
   /* TODO automatically re-connect web socket if server restarts and get state -
    https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/
    */
+}
+
+function renderLastTweet(render, state) {
+  // Hyper does not like "partial attributes", e.g. href="https://twitter.com/x/status/${state.lastTweet.id_str}">
+  const href = 'https://twitter.com/x/status/'+ state.lastTweet.id_str;
+  render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
 }
 
 function setClientId(id) {
