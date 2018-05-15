@@ -110,7 +110,7 @@ export default function initWsStream() {
       return Object.assign({}, state, {
         lastTweet: message.tweet
       });
-    })  
+    });
 
   // TODO implement delete message
 
@@ -121,8 +121,8 @@ export default function initWsStream() {
       appointments: [],
       clientId: '',
       isAuto: false,
-      titleCounter: 0,
-      lastTweet: null
+      lastTweet: null,
+      titleCounter: 0
     }
   );
 
@@ -137,14 +137,15 @@ export default function initWsStream() {
       doNextRender(appointmentsVTable);
       document.title = notificationTitle.updateAndGetTitle(state.titleCounter);
       // TODO convert to hyper
-      if(state.lastTweet) {
-        document.querySelector('#last-tweet').innerHTML = `<a href="https://twitter.com/x/status/${state.lastTweet.id_str}">
+      if (state.lastTweet) {
+        document.querySelector('#last-tweet').innerHTML = `<a
+        href="https://twitter.com/x/status/${state.lastTweet.id_str}">
         "${state.lastTweet.text}" by ${state.lastTweet.username}
         </a>`;
       }
     },
-    err => console.error('an error on state$', err),
-    () => console.log('state$ completed')
+    err => console.error('an error on state$', err), // eslint-disable-line
+    () => console.log('state$ completed') // eslint-disable-line
   );
 
   doInitRender((payload: string) => {
