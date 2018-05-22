@@ -89,9 +89,9 @@ Planning
     * https://www.webgenerator.nl/twitter-api-key-api-secret-access-token-secret/
     * https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
     * https://www.npmjs.com/package/twitter-stream-api
-* 8-5 hyperapp/lit-html for reactive rendering (e.g. of the last tweet)
-* 8-5 Try out sentry.io 
-* 8-5 Webpack 4, ParcelJS
+* ✅ 22-5 hyperapp/lit-html for reactive rendering (e.g. of the last tweet)
+* Try out sentry.io 
+* Webpack 4, ParcelJS
 * combine with Redux
 * Firebase and hosting
 * Try out https://stenciljs.com/
