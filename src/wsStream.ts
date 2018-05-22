@@ -4,7 +4,7 @@ import { notificationTitle } from './notification';
 import { doInitRender, doNextRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
 import { bind } from 'hyperhtml/esm';
-import './MyLastTweet';
+import './LatestTweet';
 
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
@@ -158,6 +158,10 @@ function renderLastTweet(render, state) {
   // Hyper does not like "partial attributes", e.g. href="https://twitter.com/x/status/${state.lastTweet.id_str}">
   const href = 'https://twitter.com/x/status/'+ state.lastTweet.id_str;
   render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
+  const latestTweetElem = document.querySelector('latest-tweet');
+  console.log(latestTweetElem);
+  // TODO set latestTweetElem.tweet-info to state.lastTweet
+  latestTweetElem.setAttribute('tweet-info', JSON.stringify(state.lastTweet));
 }
 
 function setClientId(id) {
