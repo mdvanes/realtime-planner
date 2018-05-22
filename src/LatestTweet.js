@@ -2,13 +2,12 @@ import { bind } from 'hyperhtml/esm';
 
 // TODO: bind this.state.lastTweet (or something) to my-last-tweet.tweet-info wsStream.ts after construction
 // TODO: convert to TS
-class MyLastTweet extends HTMLElement {
+class LatestTweet extends HTMLElement {
     static get observedAttributes() {return ['tweet-info']; }
 
     constructor(...args) {
         super(...args);
-        console.log('constructing MyLastTweet');
-        //observedAttributes();
+        console.log('constructing LatestTweet');
         this.html = bind(this);
     }
 
@@ -18,18 +17,25 @@ class MyLastTweet extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('Custom square element attributes changed.');
-        //updateStyle(this);
-        this.render();
+        console.log('Attribute', name, ' changed to', newValue);
+        if(newValue !== oldValue) {
+            //updateStyle(this);
+            this.render();
+        }
       }
 
     render() {
-    return this.html`
-    <h1>Hello, ${this.getAttribute('tweet-info')}</h1>`;
+        try {
+            const {text, username} = JSON.parse(this.getAttribute('tweet-info'));
+            return this.html`THIS JUST IN: <a href="#">${text}</a> by ${username}`;
+            // render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
+        } catch(ex) {
+            return this.html`<a href="#">THIS JUST IN: _</a>`;
+        }
     }
 }
 
-customElements.define('my-last-tweet', MyLastTweet);
+customElements.define('latest-tweet', LatestTweet);
 // customElements.define(
 //     'h-welcome',
 //     class HyperWelcome extends HTMLElement {
