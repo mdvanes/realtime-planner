@@ -7,17 +7,17 @@ class LatestTweet extends HTMLElement {
 
     constructor(...args) {
         super(...args);
-        console.log('constructing LatestTweet');
+        // console.log('constructing LatestTweet');
         this.html = bind(this);
     }
 
     connectedCallback() {
-        console.log('tweet-info', this.getAttribute('tweet-info'));
+        // console.log('tweet-info', this.getAttribute('tweet-info'));
         this.render();
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('Attribute', name, ' changed to', newValue);
+        // console.log('Attribute', name, ' changed to', newValue);
         if(newValue !== oldValue) {
             //updateStyle(this);
             this.render();
@@ -26,33 +26,14 @@ class LatestTweet extends HTMLElement {
 
     render() {
         try {
-            const {text, username} = JSON.parse(this.getAttribute('tweet-info'));
-            return this.html`THIS JUST IN: <a href="#">${text}</a> by ${username}`;
-            // render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
+            const {text, username, id_str} = JSON.parse(this.getAttribute('tweet-info'));
+            // Hyper does not like "partial attributes", e.g. href="https://twitter.com/x/status/${state.lastTweet.id_str}">
+            const href = 'https://twitter.com/x/status/'+ id_str;
+            return this.html`THIS JUST IN: <a href="${href}">${text}</a> by ${username}`;
         } catch(ex) {
-            return this.html`<a href="#">THIS JUST IN: _</a>`;
+            return this.html`THIS JUST IN: _`;
         }
     }
 }
 
 customElements.define('latest-tweet', LatestTweet);
-// customElements.define(
-//     'h-welcome',
-//     class HyperWelcome extends HTMLElement {
-//       constructor(...args) {
-//         super(...args);
-//         this.html = hyperHTML.bind(this);
-//       }
-//       connectedCallback() { this.render(); }
-//       render() {
-//         return this.html`
-//         <h1>Hello, ${this.getAttribute('name')}</h1>`;
-//       }
-//     }
-//   );
-  
-//   hyperHTML.bind(document.getElementById('root'))`
-//     <h-welcome name="Sara"></h-welcome>
-//     <h-welcome name="Cahal"></h-welcome>
-//     <h-welcome name="Edite"></h-welcome>
-//   `;

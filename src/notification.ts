@@ -19,7 +19,6 @@ class NotificationTitle {
     this.counter = titleCounter;
     return this.getTitle();
   }
-
 }
 
 export const notificationTitle: NotificationTitle = new NotificationTitle();

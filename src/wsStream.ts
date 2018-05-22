@@ -1,10 +1,10 @@
+import { bind } from 'hyperhtml/esm';
 import { Observable } from 'rxjs/Rx';
 import { Appointment } from './Appointment';
+import './LatestTweet';
 import { notificationTitle } from './notification';
 import { doInitRender, doNextRender, renderControls } from './renderHelpers';
 import vTable from './vTable';
-import { bind } from 'hyperhtml/esm';
-import './LatestTweet';
 
 let appointmentsVTable: vTable = null;
 let clientId: string = null;
@@ -66,12 +66,13 @@ export default function initWsStream() {
   //     });
   //   });
 
-  const documentFocus$ = Observable.fromEvent(window, 'focus')
-    .map(() => state => {
+  const documentFocus$ = Observable.fromEvent(window, 'focus').map(
+    () => state => {
       return Object.assign({}, state, {
         titleCounter: !document.hasFocus() ? state.titleCounter : 0
       });
-    });
+    }
+  );
 
   const lock$ = ws$
     .filter(
@@ -117,16 +118,20 @@ export default function initWsStream() {
   // TODO implement delete message
 
   // Setting the initial state before receiving the initial server state
-  const state$ = Observable.merge(init$, add$, auto$, lock$, documentFocus$, tweet$).scan(
-    (state: any, changeFn) => changeFn(state),
-    {
-      appointments: [],
-      clientId: '',
-      isAuto: false,
-      lastTweet: null,
-      titleCounter: 0
-    }
-  );
+  const state$ = Observable.merge(
+    init$,
+    add$,
+    auto$,
+    lock$,
+    documentFocus$,
+    tweet$
+  ).scan((state: any, changeFn) => changeFn(state), {
+    appointments: [],
+    clientId: '',
+    isAuto: false,
+    lastTweet: null,
+    titleCounter: 0
+  });
 
   state$.subscribe(
     (state: any) => {
@@ -142,8 +147,8 @@ export default function initWsStream() {
         renderLastTweet(bind(document.querySelector('#last-tweet')), state);
       }
     },
-    err => console.error('an error on state$', err), // eslint-disable-line
-    () => console.log('state$ completed') // eslint-disable-line
+    err => console.error('an error on state$', err), // tslint:disable-line
+    () => console.log('state$ completed') // tslint:disable-line
   );
 
   doInitRender((payload: string) => {
@@ -156,11 +161,9 @@ export default function initWsStream() {
 
 function renderLastTweet(render, state) {
   // Hyper does not like "partial attributes", e.g. href="https://twitter.com/x/status/${state.lastTweet.id_str}">
-  const href = 'https://twitter.com/x/status/'+ state.lastTweet.id_str;
-  render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
+  // const href = 'https://twitter.com/x/status/'+ state.lastTweet.id_str;
+  // render`<a href="${href}">"${state.lastTweet.text}" by ${state.lastTweet.username} ${state.lastTweet.id_str}</a>`;
   const latestTweetElem = document.querySelector('latest-tweet');
-  console.log(latestTweetElem);
-  // TODO set latestTweetElem.tweet-info to state.lastTweet
   latestTweetElem.setAttribute('tweet-info', JSON.stringify(state.lastTweet));
 }
 
