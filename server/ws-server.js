@@ -230,7 +230,7 @@ const state$ = Rx.Observable.merge(init$, add$, edit$, auto$, twitter$).scan(
 );
 
 state$.subscribe(state => {
-  console.log('New state', state.appointments.length, state.isAuto);
+  console.log('New state', state.appointments.length, state.isAuto); // eslint-disable-line
   //appointments = state.appointments;
   /* TODO remove the global "appointments" altogether */
 });
