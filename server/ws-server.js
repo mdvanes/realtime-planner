@@ -69,44 +69,45 @@ const twitter$ = new Rx.Observable(function(observer) {
   Twitter.stream('statuses/filter', {
     track: 'javascript, #ING' // Tracked tweet keywords
   });
-  
-  Twitter.on('data', function (obj) {
+
+  Twitter.on('data', function(obj) {
     const parsed = JSON.parse(obj.toString());
     observer.next({
       tweet: parsed
-    })
-  });  
-})
-.map(message => state => {
-  //console.log('foo', message);
-  if(state.isAuto) {
-    const newAppointment = new Appointment(
-      '', 
-      message.tweet.user.name, 
-      message.tweet.id_str, 
-      '@' + message.tweet.user.screen_name, 
-      new Date(message.tweet.user.created_at));
-    stateSubject.next({
-      type: 'add',
-      appointment: newAppointment
     });
-    stateSubject.next({
-      type: 'tweet',
-      tweet: {
-        username: message.tweet.user.name,
-        text: message.tweet.text,
-        timestamp: message.tweet.created_at,
-        id_str: message.tweet.id_str
-      }
-    });  
-    return Object.assign({}, state, {
-      appointments: [newAppointment, ...state.appointments]
-    });  
-  } else {
-    return state;
-  }
+  });
 })
-.share(); // only needed if demuxing with filters like below?
+  .map(message => state => {
+    //console.log('foo', message);
+    if (state.isAuto) {
+      const newAppointment = new Appointment(
+        '',
+        message.tweet.user.name,
+        message.tweet.id_str,
+        '@' + message.tweet.user.screen_name,
+        new Date(message.tweet.user.created_at)
+      );
+      stateSubject.next({
+        type: 'add',
+        appointment: newAppointment
+      });
+      stateSubject.next({
+        type: 'tweet',
+        tweet: {
+          username: message.tweet.user.name,
+          text: message.tweet.text,
+          timestamp: message.tweet.created_at,
+          id_str: message.tweet.id_str
+        }
+      });
+      return Object.assign({}, state, {
+        appointments: [newAppointment, ...state.appointments]
+      });
+    } else {
+      return state;
+    }
+  })
+  .share(); // only needed if demuxing with filters like below?
 
 // Sequence called multiple times: https://github.com/Reactive-Extensions/RxJS/issues/294
 const connectionMessage$ = new Rx.Observable(function(observer) {
@@ -141,14 +142,15 @@ const connectionMessage$ = new Rx.Observable(function(observer) {
     // Randomly send updated appointments
     //randomAdd(ws);
   });
-}).map(container => {
-  //console.log('c1', container);
-  container.parsedMessage = container.message
-    ? JSON.parse(container.message).message
-    : { type: 'init' };
-  return container;
 })
-.share();
+  .map(container => {
+    //console.log('c1', container);
+    container.parsedMessage = container.message
+      ? JSON.parse(container.message).message
+      : { type: 'init' };
+    return container;
+  })
+  .share();
 
 const init$ = connectionMessage$
   .filter(({ parsedMessage }) => parsedMessage && parsedMessage.type === 'init')
