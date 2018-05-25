@@ -17,8 +17,8 @@ export function renderToggle(isAuto: boolean) {
 export function renderTable(apts) {
   return `<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 ${apts.map(renderRow).join('')}
-</table>
-<appointment-table appts="1"></appointment-table>`;
+</table>`;
+// TODO: appointment-table uses cloneNode to update, which is supposed to be much faster then innerHTML: <appointment-table appts="1"></appointment-table>`;
 }
 
 export function renderEditDialog() {
