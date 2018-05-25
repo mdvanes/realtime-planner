@@ -14,6 +14,10 @@
             margin: 20px;
         }
 
+        .mdl-data-table {
+            width: 100%;
+        }
+
         .mdl-data-table tbody tr.is-locked-effect,
         .mdl-data-table tbody tr.is-locked-effect:hover {
             background-color: #536dfe;
@@ -28,6 +32,16 @@
         latest-tweet {
             display: block;
             width: 200px;
+        }
+
+        /* Hacky, custom grid */
+        @media (min-width: 840px) {
+            .mdl-cell.custom-column-1 {
+                width: 75vw;
+            }
+            .mdl-cell.custom-column-2 {
+                width: 20vw;
+            }
         }
     </style>
 
@@ -48,13 +62,13 @@
     <main class="mdl-layout__content">
         <div class="page-content">
             <div class="mdl-grid">
-                <div class="mdl-cell mdl-cell--7-col">
-                    <div class="content" id="last-tweet"></div>
+                <div class="mdl-cell custom-column-1">
+                    <!-- <div class="content" id="last-tweet"></div> -->
                     <div class="content" id="target"></div>
                     <div class="content" id="appointments-table"></div>
                     <div id="dialog-wrapper"></div>            
                 </div>
-                <div class="mdl-cell mdl-cell--4-col">
+                <div class="mdl-cell custom-column-2">
                     <latest-tweet class="content" tweet-info=""></latest-tweet>                    
                 </div>
             </div>
