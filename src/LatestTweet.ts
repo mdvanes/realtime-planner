@@ -23,15 +23,72 @@ class LatestTweet extends HTMLElement {
         }
       }
 
+    // TODO: do not duplicate the template for the success and error case
     private render() {
         try {
             const {text, username, id_str} = JSON.parse(this.getAttribute('tweet-info'));
             // Hyper does not like "partial attributes", e.g.
             // href="https://twitter.com/x/status/${state.lastTweet.id_str}">
             const href = 'https://twitter.com/x/status/' + id_str;
-            return this.html`THIS JUST IN: <a href="${href}">${text}</a> by ${username}`;
+            // return this.html`<div>THIS JUST IN: <a href="${href}">${text}</a> by ${username}</div>`;
+            return this.html`
+            <style>
+            .tweet-card > .mdl-card__title h2 {
+                color: white;
+            }
+            .tweet-card > .mdl-card__actions {
+                display: flex;
+                box-sizing:border-box;
+                align-items: center;
+            }
+            .tweet-card > .mdl-card__actions,
+            .tweet-card > .mdl-card__actions .mdl-button--colored {
+                color: white;
+            }
+            </style>
+            <div class="mdl-card mdl-shadow--2dp tweet-card" style="background-color: rgb(83,109,254);">
+                <div class="mdl-card__title mdl-card--expand">
+                    <h2 class="mdl-card__title-text">
+                        ${username}:<br/> 
+                        ${text}
+                    </h2>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="${href}">
+                    Read More
+                    </a>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons">comment</i>                        
+                </div>
+            </div>`;            
         } catch (ex) {
-            return this.html`THIS JUST IN: _`;
+            return this.html`
+                <style>
+                .tweet-card > .mdl-card__title h2 {
+                    color: white;
+                }
+                .tweet-card > .mdl-card__actions {
+                    display: flex;
+                    box-sizing:border-box;
+                    align-items: center;
+                }
+                .tweet-card > .mdl-card__actions,
+                .tweet-card > .mdl-card__actions .mdl-button--colored {
+                    color: white;
+                }
+                </style>
+                <div class="mdl-card mdl-shadow--2dp tweet-card" style="background-color: rgb(83,109,254);">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h2 class="mdl-card__title-text">No tweet available</h2>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                        Read More
+                        </a>
+                        <div class="mdl-layout-spacer"></div>
+                        <i class="material-icons">comment</i>                        
+                    </div>
+                </div>`;
         }
     }
 }

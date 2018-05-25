@@ -24,6 +24,11 @@
             background-color: #ff5722;
             transition: background-color 2s;
         }
+
+        latest-tweet {
+            display: block;
+            width: 200px;
+        }
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -42,11 +47,17 @@
     <!--</div>-->
     <main class="mdl-layout__content">
         <div class="page-content">
-            <latest-tweet tweet-info=""></latest-tweet>
-            <div class="content" id="last-tweet"></div>
-            <div class="content" id="target"></div>
-            <div class="content" id="appointments-table"></div>
-            <div id="dialog-wrapper"></div>
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--7-col">
+                    <div class="content" id="last-tweet"></div>
+                    <div class="content" id="target"></div>
+                    <div class="content" id="appointments-table"></div>
+                    <div id="dialog-wrapper"></div>            
+                </div>
+                <div class="mdl-cell mdl-cell--4-col">
+                    <latest-tweet class="content" tweet-info=""></latest-tweet>                    
+                </div>
+            </div>
         </div>
     </main>
 </div>
