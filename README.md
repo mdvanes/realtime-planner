@@ -90,6 +90,10 @@ Planning
     * https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
     * https://www.npmjs.com/package/twitter-stream-api
 * ✅ 22-5 hyperapp/lit-html for reactive rendering (e.g. of the last tweet)
+
+
+# Follow up
+
 * Try out sentry.io 
 * Webpack 4, ParcelJS
 * combine with Redux
